@@ -35,6 +35,12 @@ data = pandas.read_csv(file)
 data['corr_factor'] = data['correct'].astype('category')
 data['rounded_durations'] = round(data['stim_dur'],3)
 
+data['shifted_direction'] = data['currentDirection'].shift(-1)
+data['reversalPoint'] = data.shifted_direction.eq(data.shifted_direction.shift())
+new_data = data.drop([data.index[0],data.index[-1]])
+threshold = round(new_data[new_data['reversalPoint'] == False]['stim_dur'].mean(),4)
+print(threshold)
+
 #Plot1
 
 
@@ -59,7 +65,7 @@ for i in range(len(durations)):
     id = data['rounded_durations'] == durations[i]
     nTrials.append(sum(id*1))
     nCorrect.append(sum((data['correct'][id])))
-    
+
 
 pCorrect = np.divide(nCorrect,nTrials)
 

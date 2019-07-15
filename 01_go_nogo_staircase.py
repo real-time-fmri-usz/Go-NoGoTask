@@ -163,7 +163,7 @@ output_file_path = 'results/%s_%s_%s_%s.csv'%(subid,session,version,time_stamp)
 output_file = open(output_file_path,'w+')
 
 ###TO DO
-output_file.write('trial,trial_type,stim_side,response,correct,response_time,cumulative_response_time,iti_onset,iti_dur,stim_onset,stim_dur,blank_onset,blank_dur,mask_onset,mask_dur,response_onset,response_dur,target_side,version\n')
+output_file.write('trial,trial_type,stim_side,response,correct,response_time,cumulative_response_time,iti_onset,iti_dur,stim_onset,stim_dur,blank_onset,blank_dur,mask_onset,mask_dur,response_onset,response_dur,target_side,version,currentDirection\n')
 output_file.flush()
 
 
@@ -337,7 +337,7 @@ for shuffled_trial in trial_order:
 					else:
 						correct = 0
 						currentDirection = 'up'
-				output_file.write(','.join([str(trial),str(target_side),str(side),str(sub_response),str(correct),str(response_time),str(cumulative_response_time),str(iti_onset),str(iti_dur),str(stim_onset),str(stim_dur),str(blank_onset),str(blank_dur),str(mask_onset),str(mask_dur),str(response_onset),str(response_dur),target_side,version+'\n']))
+				output_file.write(','.join([str(trial),str(target_side),str(side),str(sub_response),str(correct),str(response_time),str(cumulative_response_time),str(iti_onset),str(iti_dur),str(stim_onset),str(stim_dur),str(blank_onset),str(blank_dur),str(mask_onset),str(mask_dur),str(response_onset),str(response_dur),target_side,version,str(currentDirection)+'\n']))
 				output_file.flush()
 
 	if not responded:
@@ -345,7 +345,7 @@ for shuffled_trial in trial_order:
 			correct = 1
 		else:
 			correct = 0
-		output_file.write(','.join([str(trial),str(target_side),str(side),'NA',str(correct),'NA','NA',str(iti_onset),str(iti_dur),str(stim_onset),str(stim_dur),str(blank_onset),str(blank_dur),str(mask_onset),str(mask_dur),str(response_onset),str(response_dur),str(target_side),str(version)+'\n']))
+		output_file.write(','.join([str(trial),str(target_side),str(side),'NA',str(correct),'NA','NA',str(iti_onset),str(iti_dur),str(stim_onset),str(stim_dur),str(blank_onset),str(blank_dur),str(mask_onset),str(mask_dur),str(response_onset),str(response_dur),str(target_side),str(version),str(currentDirection)+'\n']))
 		output_file.flush()
 	#timing update
 	last_trial_dur = iti_dur + stim_dur + blank_dur + mask_dur + response_dur
@@ -361,11 +361,13 @@ for shuffled_trial in trial_order:
 		if correctInARow == 2:
 			stim_dur -= stepsize
 			correctInARow = 0
+
 	else:
 		correctInARow = 0
 		stim_dur += stepsize
-	if stim_dur < stepsize:
-		stim_dur = stepsize
+
+	if stim_dur < 0.0167:
+		stim_dur = 0.0167
 
 	if stepsize < .0167:
 		stepsize = 0.0167
