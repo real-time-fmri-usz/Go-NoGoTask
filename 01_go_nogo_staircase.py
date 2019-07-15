@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 
 ###### EDIT PARAMETERS BELOW #######
 
-num_trials = 30        # number of trials in the experiment on target side
+num_trials = 100        # number of trials in the experiment on target side
 initialStim_dur = 0.100     # time in seconds that the subliminal stim appears on the screen [strong,weak,catch]
 blank_dur = 0.033        # time a blank screen between stim and mask is on screen [strong,weak,catch]
 initialMask_dur = 0.200     # time the mask appears on the screen [strong,weak,catch]
@@ -109,19 +109,19 @@ instructions_text1 = visual.TextStim(win, text='In each trial of this experiment
 instructions_text2 = visual.TextStim(win, text='It will have a point missing from its left side or its right side.', height = .065, color = 'black', alignHoriz = 'center', alignVert = 'center', pos=(0.0,0.2))
 left_example = visual.ImageStim(
 	win=win,
-	image="pics/left_diamond.png",
+	image="left_diamond.png",
 	units="pix",
 	pos=[-150,-50])
 right_example = visual.ImageStim(
 	win=win,
-	image="pics/right_diamond.png",
+	image="right_diamond.png",
 	units="pix",
 	pos=[150,-50])
 instructions_text3 = visual.TextStim(win, text='left side missing                 right side missing', height = .065, color = 'black', alignHoriz = 'center', alignVert = 'center', pos=(0.0,-0.5))
 instructions_text4 = visual.TextStim(win, text='The diamond will be followed immediately by a frame shape.', height = .065, color = 'black', alignHoriz = 'center', alignVert = 'center', pos=(0.0,0.2))
 frame_example = visual.ImageStim(
 	win=win,
-	image="pics/mask.png",
+	image="mask.png",
 	units="pix",
 	pos=[0,-50])
 

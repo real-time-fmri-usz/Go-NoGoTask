@@ -99,7 +99,7 @@ random.shuffle(trial_order)
 ### Visuals ###
 
 #window
-win = visual.Window(size=[800, 600], color=[1,1,1], screen = 1, fullscr = True)
+win = visual.Window(size=[800, 600], color=[1,1,1], screen = 0, fullscr = False)
 win.setMouseVisible(False)
 aspect = float(win.size[1])/float(win.size[0])
 print(aspect)
@@ -125,19 +125,19 @@ instructions_text1 = visual.TextStim(win, text='In each trial of this experiment
 instructions_text2 = visual.TextStim(win, text='It will have a point missing from its left side or its right side.', height = .065, color = 'black', alignHoriz = 'center', alignVert = 'center', pos=(0.0,0.2))
 left_example = visual.ImageStim(
 	win=win,
-	image="pics/left_diamond.png",
+	image="left_diamond.png",
 	units="pix",
 	pos=[-150,-50])
 right_example = visual.ImageStim(
 	win=win,
-	image="pics/right_diamond.png",
+	image="right_diamond.png",
 	units="pix",
 	pos=[150,-50])
 instructions_text3 = visual.TextStim(win, text='left side missing                 right side missing', height = .065, color = 'black', alignHoriz = 'center', alignVert = 'center', pos=(0.0,-0.5))
 instructions_text4 = visual.TextStim(win, text='The diamond will be followed immediately by a frame shape.', height = .065, color = 'black', alignHoriz = 'center', alignVert = 'center', pos=(0.0,0.2))
 frame_example = visual.ImageStim(
 	win=win,
-	image="pics/mask.png",
+	image="mask.png",
 	units="pix",
 	pos=[0,-50])
 
