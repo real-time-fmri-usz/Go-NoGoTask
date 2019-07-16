@@ -11,6 +11,8 @@ import csv
 import pandas
 import matplotlib
 import matplotlib.pyplot as plt
+import os
+
 
 ##### SETUP #####
 
@@ -27,7 +29,7 @@ response_dur = 1.5              # time the response period stays on the screen
 iti_durs = [.5,1]  # time with no no image present between trials
 
 
-stim_size = .04             #size of the stimulus on screen
+stim_size = .12             #size of the stimulus on screen
 mask_size_ratio = 1.6         #how much proptionally bigger is mask
 #stim_line_width =  200      # width of diamond frame lines
 blocker_size = .15         #size of black boxes the mask the edge of the stimulus (pick a value between 0 and 1. 0 blocks nothing, 1 blocks a whole half)
@@ -157,9 +159,14 @@ press_nothing_text = visual.TextStim(win, text='Press nothing', color = 'black',
 practice_clock = core.Clock()
 experiment_clock = core.Clock()
 
+# Create the results folder
+
+if not os.path.exists('results'):
+    os.makedirs('results')
+
 ### Results Logging ###
 time_stamp = strftime('%d-%m-%Y_%H:%M:%S').replace(':','_')
-output_file_path = 'results/%s_%s_%s_%s.csv'%(subid,session,version,time_stamp)
+output_file_path = 'results/%s_%s_%s_staircase.csv'%(subid,session,time_stamp)
 output_file = open(output_file_path,'w+')
 
 ###TO DO
