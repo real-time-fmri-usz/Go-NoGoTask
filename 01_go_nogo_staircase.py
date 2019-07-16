@@ -21,10 +21,10 @@ import os
 ###### EDIT PARAMETERS BELOW #######
 
 num_trials = 100        # number of trials in the experiment on target side
-initialStim_dur = 0.100     # time in seconds that the subliminal stim appears on the screen [strong,weak,catch]
-blank_dur = 0.033        # time a blank screen between stim and mask is on screen [strong,weak,catch]
+initialStim_dur = 0.0167 * 4     # time in seconds that the subliminal stim appears on the screen [strong,weak,catch]
+blank_dur = 0.0167 * 2        # time a blank screen between stim and mask is on screen [strong,weak,catch]
 initialMask_dur = 0.200     # time the mask appears on the screen [strong,weak,catch]
-stepsize = 0.0167 * 3     # The stepsize for the staircase procedure
+stepsize = 0.0167 * 2     # The stepsize for the staircase procedure
 response_dur = 1.5              # time the response period stays on the screen
 iti_durs = [.5,1]  # time with no no image present between trials
 
