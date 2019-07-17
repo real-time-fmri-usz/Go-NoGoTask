@@ -21,7 +21,7 @@ import os
 ###### EDIT PARAMETERS BELOW #######
 
 num_trials = 100        # number of trials in the experiment on target side
-initialStim_dur = 4     # in frames
+initialStim_dur = 6     # in frames
 blank_dur =  4        # time a blank screen between stim and mask is on screen [strong,weak,catch]
 initialMask_dur = 12     # time the mask appears on the screen [strong,weak,catch]
 stepsize = 2     # The stepsize for the staircase procedure
@@ -85,7 +85,7 @@ random.shuffle(trial_order)
 ### Visuals ###
 
 #window
-win = visual.Window(size=[800, 600], color=[1,1,1], screen = 1, fullscr = True)
+win = visual.Window(size=[800, 600], color=[1,1,1], screen = 0, fullscr = False)
 win.setMouseVisible(False)
 aspect = float(win.size[1])/float(win.size[0])
 print(aspect)
@@ -329,6 +329,7 @@ for shuffled_trial in trial_order:
 	presentation_duration = experiment_clock.getTime() - start_stimulus
 	#blank presentation
 	for m in range(int(blank_dur)):
+		black_diamond.draw()
 		win.flip()
 	# mask presentation
 	responded = False
@@ -355,7 +356,7 @@ for shuffled_trial in trial_order:
 						correct = 1
 						currentDirection = 'down'
 					else:
-						correct = 0
+						correct = 0 #0
 						currentDirection = 'up'
 				output_file.write(','.join([str(trial),str(target_side),str(side),str(sub_response),str(correct),str(response_time),str(cumulative_response_time),str(iti_onset/60),str(iti_dur/60),str(stim_onset/60),str(stim_dur/60),str(blank_onset/60),str(blank_dur/60),str(mask_onset/60),str(mask_dur/60),str(response_onset/60),str(response_dur/60),target_side,version,str(currentDirection),str(presentation_duration)+'\n']))
 				output_file.flush()
@@ -364,7 +365,7 @@ for shuffled_trial in trial_order:
 		if version == 'go-nogo' and target_type == 'target':
 			correct = 1
 		else:
-			correct = 0
+			correct = 0 #0
 		output_file.write(','.join([str(trial),str(target_side),str(side),'NA',str(correct),'NA','NA',str(iti_onset/60),str(iti_dur/60),str(stim_onset/60),str(stim_dur/60),str(blank_onset/60),str(blank_dur/60),str(mask_onset/60),str(mask_dur/60),str(response_onset/60),str(response_dur/60),str(target_side),str(version),str(currentDirection),str(presentation_duration)+'\n']))
 		output_file.flush()
 	#timing update
