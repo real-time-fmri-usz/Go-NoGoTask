@@ -5,6 +5,7 @@ from psychopy import  gui, visual, core, data, event, logging
 from time import strftime
 from random import choice
 from numpy.random import choice as choice2
+import numpy.random as rd
 import numpy as np
 import random
 import csv
@@ -21,11 +22,11 @@ import os
 ###### EDIT PARAMETERS BELOW #######
 
 num_trials = 100        # number of trials in the experiment on target side
-initialStim_dur = 6     # in frames
-blank_dur =  4        # time a blank screen between stim and mask is on screen [strong,weak,catch]
-initialMask_dur = 12     # time the mask appears on the screen [strong,weak,catch]
+initialStim_dur = 12     # in frames
+blank_dur = 2        # time a blank screen between stim and mask is on screen [strong,weak,catch]
+initialMask_dur = 1 #12     # time the mask appears on the screen [strong,weak,catch]
 stepsize = 2     # The stepsize for the staircase procedure
-response_dur = 90              # time the response period stays on the screen
+response_dur = 90 #90              # time the response period stays on the screen
 iti_durs = [30,60]  # time with no no image present between trials
 
 
@@ -33,9 +34,9 @@ stim_size = .04             #size of the stimulus on screen
 mask_size_ratio = 1.6         #how much proptionally bigger is mask
 #stim_line_width =  200      # width of diamond frame lines
 blocker_size = .12         #size of black boxes the mask the edge of the stimulus (pick a value between 0 and 1. 0 blocks nothing, 1 blocks a whole half)
-response_keys = {'left':'b','right':'n'}     # keys to use for a left response and a right response
+response_keys = {'left':'b','right':'z'}     # keys to use for a left response and a right response
 response_keys_inv = {v: k for k, v in response_keys.items()}
-reskeys_list = ['b','n']
+reskeys_list = ['b','z']
 pix_size = .001
 
 practice_iti_dur = 2
@@ -85,38 +86,39 @@ random.shuffle(trial_order)
 ### Visuals ###
 
 #window
-win = visual.Window(size=[800, 600], color=[1,1,1], screen = 0, fullscr = False)
+win = visual.Window(size=[800, 600], color=[-1,-1,-1], screen = 0, fullscr = False)
 win.setMouseVisible(False)
 aspect = float(win.size[1])/float(win.size[0])
 print(aspect)
 stim_width = stim_size
 stim_height = stim_size/aspect
 #Shapes
-mask = visual.ShapeStim(win, lineColor='black', fillColor='black', vertices=((-1*stim_width*mask_size_ratio, 0), (0, stim_height*mask_size_ratio), (stim_width*mask_size_ratio, 0), (0,-1*stim_height*mask_size_ratio)))
-white_diamond = visual.ShapeStim(win, lineColor='black', fillColor='black', vertices=((-1*stim_width, 0), (0, stim_height), (stim_width, 0), (0,-1*stim_height)))
-black_diamond = visual.ShapeStim(win, lineColor='white', fillColor='white', vertices=((-1*stim_width-pix_size, 0), (0, stim_height+pix_size), (stim_width+pix_size, 0), (0,-1*stim_height-pix_size)))
-blockers = {'left':  visual.ShapeStim(win, lineWidth=.1, lineColor='white', fillColor='white', vertices=((-1, stim_height), (-1, -1*stim_height), (-1*stim_width+stim_width*blocker_size, stim_height), (-1*stim_width+stim_width*blocker_size, -1*stim_height))),
-			'right': visual.ShapeStim(win, lineWidth=.1, lineColor='white', fillColor='white', vertices=((1, stim_height), (1, -1*stim_height), (stim_width-stim_width*blocker_size, stim_height), (stim_width-stim_width*blocker_size, -1*stim_height))),
-			'top':   visual.ShapeStim(win, lineWidth=.1, lineColor='white', fillColor='white', vertices=((-1, 1), (1, 1), (-1,stim_height-stim_size*blocker_size), (1,stim_height-stim_height*blocker_size))),
-			'bottom':visual.ShapeStim(win, lineWidth=.1, lineColor='white', fillColor='white', vertices=((-1, -1), (1, -1), (-1,-1*stim_height+stim_height*blocker_size), (1,-1*stim_height+stim_height*blocker_size)))
+mask = visual.ShapeStim(win, lineColor='white', fillColor='white', vertices=((-1*stim_width*mask_size_ratio, 0), (0, stim_height*mask_size_ratio), (stim_width*mask_size_ratio, 0), (0,-1*stim_height*mask_size_ratio)))
+white_diamond = visual.ShapeStim(win, lineColor='white', fillColor='white', vertices=((-1*stim_width, 0), (0, stim_height), (stim_width, 0), (0,-1*stim_height)))
+black_diamond = visual.ShapeStim(win, lineColor='black', fillColor='black', vertices=((-1*stim_width-pix_size, 0), (0, stim_height+pix_size), (stim_width+pix_size, 0), (0,-1*stim_height-pix_size)))
+blockers = {'left':  visual.ShapeStim(win, lineWidth=.1, lineColor='black', fillColor='black', vertices=((-1, stim_height), (-1, -1*stim_height), (-1*stim_width+stim_width*blocker_size, stim_height), (-1*stim_width+stim_width*blocker_size, -1*stim_height))),
+			'right': visual.ShapeStim(win, lineWidth=.1, lineColor='black', fillColor='black', vertices=((1, stim_height), (1, -1*stim_height), (stim_width-stim_width*blocker_size, stim_height), (stim_width-stim_width*blocker_size, -1*stim_height))),
+			'top':   visual.ShapeStim(win, lineWidth=.1, lineColor='black', fillColor='black', vertices=((-1, 1), (1, 1), (-1,stim_height-stim_size*blocker_size), (1,stim_height-stim_height*blocker_size))),
+			'bottom':visual.ShapeStim(win, lineWidth=.1, lineColor='black', fillColor='black', vertices=((-1, -1), (1, -1), (-1,-1*stim_height+stim_height*blocker_size), (1,-1*stim_height+stim_height*blocker_size)))
 			}
+
 
 #Fixation
 fixation = visual.ShapeStim(
     win=win, name='polygon', vertices='cross',
-    size=(stim_width*0.75, stim_height*0.75),
+    size=(stim_width, stim_height),
     ori=0, pos=(0, 0),
-    fillColor=[0,0,0], fillColorSpace='rgb',
-    opacity=1, depth=0.0, interpolate=True)
-
+    fillColor=[1,1,1], fillColorSpace='rgb',
+    lineColor = [-1,-1,-1],
+	opacity=1, depth=0.0, interpolate=True)
 ###text
 #headers
-instructions_header = visual.TextStim(win, text='INSTRUCTIONS', color = 'black', alignHoriz = 'center', pos=(0.0,.8))
-experiment_header = visual.TextStim(win, text='MAIN EXPERIMENT', color = 'black', alignHoriz = 'center', pos=(0.0,.8))
+instructions_header = visual.TextStim(win, text='INSTRUCTIONS', color = 'white', alignHoriz = 'center', pos=(0.0,.8))
+experiment_header = visual.TextStim(win, text='MAIN EXPERIMENT', color = 'white', alignHoriz = 'center', pos=(0.0,.8))
 
 #instructions
-instructions_text1 = visual.TextStim(win, text='In each trial of this experiment a diamond shape will appear in the middle of the screen', height = .065, color = 'black', alignHoriz = 'center', alignVert = 'center', pos=(0.0,0.2))
-instructions_text2 = visual.TextStim(win, text='It will have a point missing from its left side or its right side.', height = .065, color = 'black', alignHoriz = 'center', alignVert = 'center', pos=(0.0,0.2))
+instructions_text1 = visual.TextStim(win, text='In each trial of this experiment a diamond shape will appear in the middle of the screen', height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,0.2))
+instructions_text2 = visual.TextStim(win, text='It will have a point missing from its left side or its right side.', height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,0.2))
 left_example = visual.ImageStim(
 	win=win,
 	image="left_diamond.png",
@@ -127,8 +129,9 @@ right_example = visual.ImageStim(
 	image="right_diamond.png",
 	units="pix",
 	pos=[150,-50])
-instructions_text3 = visual.TextStim(win, text='left side missing                 right side missing', height = .065, color = 'black', alignHoriz = 'center', alignVert = 'center', pos=(0.0,-0.5))
-instructions_text4 = visual.TextStim(win, text='The diamond will be followed immediately by a frame shape.', height = .065, color = 'black', alignHoriz = 'center', alignVert = 'center', pos=(0.0,0.2))
+
+instructions_text3 = visual.TextStim(win, text='left side missing                 right side missing', height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,-0.5))
+instructions_text4 = visual.TextStim(win, text='The diamond will be followed immediately by a frame shape.', height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,0.2))
 frame_example = visual.ImageStim(
 	win=win,
 	image="mask.png",
@@ -136,8 +139,8 @@ frame_example = visual.ImageStim(
 	pos=[0,-50])
 
 
-instructions_text5 = visual.TextStim(win, text='Press the "%s" key if the frame is preceded by a diamond missing a point on its %s side.'%(response_keys['left'],'left'), height = .065, color = 'black', alignHoriz = 'center', alignVert = 'center', pos=(0.0,0.0))
-instructions_text6 = visual.TextStim(win, text='Press the "%s" key if the frame is preceded by a diamond missing a point on its %s side.'%(response_keys['right'],'right'), height = .065, color = 'black', alignHoriz = 'center', alignVert = 'center', pos=(0.0,-0.1))
+instructions_text5 = visual.TextStim(win, text='Press the "%s" key if the frame is preceded by a diamond missing a point on its %s side.'%(response_keys['left'],'left'), height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,0.0))
+instructions_text6 = visual.TextStim(win, text='Press the "%s" key if the frame is preceded by a diamond missing a point on its %s side.'%(response_keys['right'],'right'), height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,-0.1))
 
 
 instructions_text1.wrapWidth = 4
@@ -147,20 +150,20 @@ instructions_text4.wrapWidth = 4
 instructions_text5.wrapWidth = 4
 instructions_text6.wrapWidth = 4
 
-instructions2_text = [visual.TextStim(win, text='Geat job! Make sense?', height = .065, color = 'black', alignHoriz = 'center', alignVert = 'center', pos=(0.0,0.1)),
-			visual.TextStim(win, text='In the real experiment you will only have %s seconds to respond.'%response_dur, height = .065, color = 'black', alignHoriz = 'center', alignVert = 'center', pos=(0.0,0.0))]
+instructions2_text = [visual.TextStim(win, text='Geat job! Make sense?', height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,0.1)),
+			visual.TextStim(win, text='In the real experiment you will only have %s seconds to respond.'%response_dur, height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,0.0))]
 
 for instruction in instructions2_text:
 	instruction.wrapWidth = 4
 
 
 #mis
-example_text = visual.TextStim(win, text='Here are some practice examples . . .', height = .065, color = 'black', alignHoriz = 'center', alignVert = 'center', pos=(0.0,0.0))
-get_ready_text = [visual.TextStim(win, text='Now let\'s move on the the real experiment.', height = .065, color = 'black', alignHoriz = 'center', alignVert = 'center', pos=(0.0,0.0)),
-				  visual.TextStim(win, text='Get ready . . .', height = .065, color = 'black', alignHoriz = 'center', alignVert = 'center', pos=(0.0,-0.1))]
-press_left_text = visual.TextStim(win, text='Press the "%s" key'%response_keys['left'], color = 'black', alignHoriz = 'center', alignVert = 'center', pos=(0.0,stim_size+.2))
-press_right_text = visual.TextStim(win, text='Press the "%s" key'%response_keys['right'], color = 'black', alignHoriz = 'center', alignVert = 'center', pos=(0.0,stim_size+.2))
-press_nothing_text = visual.TextStim(win, text='Press nothing', color = 'black', alignHoriz = 'center', alignVert = 'center', pos=(0.0,stim_size+.2))
+example_text = visual.TextStim(win, text='Here are some practice examples . . .', height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,0.0))
+get_ready_text = [visual.TextStim(win, text='Now let\'s move on the the real experiment.', height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,0.0)),
+				  visual.TextStim(win, text='Get ready . . .', height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,-0.1))]
+press_left_text = visual.TextStim(win, text='Press the "%s" key'%response_keys['left'], color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,stim_size+.2))
+press_right_text = visual.TextStim(win, text='Press the "%s" key'%response_keys['right'], color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,stim_size+.2))
+press_nothing_text = visual.TextStim(win, text='Press nothing', color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,stim_size+.2))
 
 ### Timing ###
 
@@ -178,7 +181,7 @@ output_file_path = 'results/%s_%s_%s_staircase.csv'%(subid,session,time_stamp)
 output_file = open(output_file_path,'w+')
 
 ###TO DO
-output_file.write('trial,trial_type,stim_side,response,correct,response_time,cumulative_response_time,iti_onset,iti_dur,stim_onset,stim_dur,blank_onset,blank_dur,mask_onset,mask_dur,response_onset,response_dur,target_side,version,currentDirection,presentation_duration\n')
+output_file.write('trial,trial_type,stim_side,response,correct,response_time,cumulative_response_time,iti_onset,iti_dur,stim_onset,stim_dur_frames,stim_dur,blank_onset,blank_dur,mask_onset,mask_dur,response_onset,response_dur,target_side,version,currentDirection,presentation_duration\n')
 output_file.flush()
 
 
@@ -329,7 +332,6 @@ for shuffled_trial in trial_order:
 	presentation_duration = experiment_clock.getTime() - start_stimulus
 	#blank presentation
 	for m in range(int(blank_dur)):
-		black_diamond.draw()
 		win.flip()
 	# mask presentation
 	responded = False
@@ -341,7 +343,8 @@ for shuffled_trial in trial_order:
 			mask.draw()
 			black_diamond.draw()
 		else:
-			fixation.draw()
+			#fixation.draw()
+			black_diamond.draw()
 		win.flip()
 		#response collection
 		if not responded:
@@ -358,7 +361,7 @@ for shuffled_trial in trial_order:
 					else:
 						correct = 0 #0
 						currentDirection = 'up'
-				output_file.write(','.join([str(trial),str(target_side),str(side),str(sub_response),str(correct),str(response_time),str(cumulative_response_time),str(iti_onset/60),str(iti_dur/60),str(stim_onset/60),str(stim_dur/60),str(blank_onset/60),str(blank_dur/60),str(mask_onset/60),str(mask_dur/60),str(response_onset/60),str(response_dur/60),target_side,version,str(currentDirection),str(presentation_duration)+'\n']))
+				output_file.write(','.join([str(trial),str(target_side),str(side),str(sub_response),str(correct),str(response_time),str(cumulative_response_time),str(iti_onset/60),str(iti_dur/60),str(stim_onset/60),str(stim_dur),str(stim_dur/60),str(blank_onset/60),str(blank_dur/60),str(mask_onset/60),str(mask_dur/60),str(response_onset/60),str(response_dur/60),target_side,version,str(currentDirection),str(presentation_duration)+'\n']))
 				output_file.flush()
 
 	if not responded:
@@ -366,7 +369,7 @@ for shuffled_trial in trial_order:
 			correct = 1
 		else:
 			correct = 0 #0
-		output_file.write(','.join([str(trial),str(target_side),str(side),'NA',str(correct),'NA','NA',str(iti_onset/60),str(iti_dur/60),str(stim_onset/60),str(stim_dur/60),str(blank_onset/60),str(blank_dur/60),str(mask_onset/60),str(mask_dur/60),str(response_onset/60),str(response_dur/60),str(target_side),str(version),str(currentDirection),str(presentation_duration)+'\n']))
+		output_file.write(','.join([str(trial),str(target_side),str(side),'NA',str(correct),'NA','NA',str(iti_onset/60),str(iti_dur/60),str(stim_onset/60),str(stim_dur),str(stim_dur/60),str(blank_onset/60),str(blank_dur/60),str(mask_onset/60),str(mask_dur/60),str(response_onset/60),str(response_dur/60),str(target_side),str(version),str(currentDirection),str(presentation_duration)+'\n']))
 		output_file.flush()
 	#timing update
 	last_trial_dur = iti_dur + stim_dur + blank_dur + mask_dur + response_dur
@@ -376,22 +379,28 @@ for shuffled_trial in trial_order:
 	if trial > 1:
 		if not directions[trial] == directions[trial-1]:
 			stepsize = stepsize / 2
+			if stepsize < 1:
+				stepsize = 1
 
 	if correct == 1:
 		correctInARow += 1
 		if correctInARow == 2:
 			stim_dur -= stepsize
+			mask_dur += stepsize
 			correctInARow = 0
 
 	else:
 		correctInARow = 0
 		stim_dur += stepsize
+		mask_dur -= stepsize
+
 
 	if stim_dur < 1:
 		stim_dur = 1
 
-	if stepsize < 1:
-		stepsize = 1
+	if mask_dur > 12:
+		mask_dur = 12
+
 
 output_file.close()
 win.close()
