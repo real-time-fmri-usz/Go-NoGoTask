@@ -139,7 +139,7 @@ frame_example = visual.ImageStim(
 	pos=[0,-50])
 
 
-instructions_text5 = visual.TextStim(win, text='Press the "%s" key if the frame is preceded by a diamond missing a point on its %s side.'%go_side,go_side), height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,0.0))
+instructions_text5 = visual.TextStim(win, text='Press the "%s" key if the frame is preceded by a diamond missing a point on its %s side.'%(go_side,go_side), height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,0.0))
 instructions_text6 = visual.TextStim(win, text='Press nothing if the frame is preceded by a diamond missing a point on its %s side.'%nogo_side, height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,-0.1))
 instructions_text7 = visual.TextStim(win, text='Points will be missing from the left and right with equal frequency,', height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,-0.1))
 instructions_text8 = visual.TextStim(win, text='please keep this in mind when making your response.', height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,-0.2))
