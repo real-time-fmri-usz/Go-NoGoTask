@@ -30,7 +30,7 @@ response_dur = 90 #90              # time the response period stays on the scree
 iti_durs = [30,60]  # time with no no image present between trials
 
 
-stim_size = .04             #size of the stimulus on screen
+stim_size = .08             #size of the stimulus on screen
 mask_size_ratio = 1.6         #how much proptionally bigger is mask
 #stim_line_width =  200      # width of diamond frame lines
 blocker_size = .12         #size of black boxes the mask the edge of the stimulus (pick a value between 0 and 1. 0 blocks nothing, 1 blocks a whole half)
@@ -139,8 +139,8 @@ frame_example = visual.ImageStim(
 	pos=[0,-50])
 
 
-instructions_text5 = visual.TextStim(win, text='Press the "%s" key if the frame is preceded by a diamond missing a point on its %s side.'%(response_keys['left'],'left'), height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,0.0))
-instructions_text6 = visual.TextStim(win, text='Press the "%s" key if the frame is preceded by a diamond missing a point on its %s side.'%(response_keys['right'],'right'), height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,-0.1))
+instructions_text5 = visual.TextStim(win, text='Press the "%s" key if the frame is preceded by a diamond missing a point on its %s side.'%(response_keys_inv['b'],'left'), height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,0.0))
+instructions_text6 = visual.TextStim(win, text='Press the "%s" key if the frame is preceded by a diamond missing a point on its %s side.'%(response_keys_inv['z'],'right'), height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,-0.1))
 
 
 instructions_text1.wrapWidth = 4
@@ -161,8 +161,8 @@ for instruction in instructions2_text:
 example_text = visual.TextStim(win, text='Here are some practice examples . . .', height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,0.0))
 get_ready_text = [visual.TextStim(win, text='Now let\'s move on the the real experiment.', height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,0.0)),
 				  visual.TextStim(win, text='Get ready . . .', height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,-0.1))]
-press_left_text = visual.TextStim(win, text='Press the "%s" key'%response_keys['left'], color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,stim_size+.2))
-press_right_text = visual.TextStim(win, text='Press the "%s" key'%response_keys['right'], color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,stim_size+.2))
+press_left_text = visual.TextStim(win, text='Press the left key', color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,stim_size+.2))
+press_right_text = visual.TextStim(win, text='Press the right key', color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,stim_size+.2))
 press_nothing_text = visual.TextStim(win, text='Press nothing', color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,stim_size+.2))
 
 ### Timing ###
@@ -181,7 +181,7 @@ output_file_path = 'results/%s_%s_%s_staircase.csv'%(subid,session,time_stamp)
 output_file = open(output_file_path,'w+')
 
 ###TO DO
-output_file.write('trial,trial_type,stim_side,response,correct,response_time,cumulative_response_time,iti_onset,iti_dur,stim_onset,stim_dur_frames,stim_dur,blank_onset,blank_dur,mask_onset,mask_dur,response_onset,response_dur,target_side,version,currentDirection,presentation_duration\n')
+output_file.write('subid,session,trial,trial_type,stim_side,response,correct,response_time,cumulative_response_time,iti_onset,iti_dur,stim_onset,stim_dur_frames,stim_dur,blank_onset,blank_dur,mask_onset,mask_dur,response_onset,response_dur,target_side,version,currentDirection,presentation_duration\n')
 output_file.flush()
 
 
@@ -361,7 +361,7 @@ for shuffled_trial in trial_order:
 					else:
 						correct = 0 #0
 						currentDirection = 'up'
-				output_file.write(','.join([str(trial),str(target_side),str(side),str(sub_response),str(correct),str(response_time),str(cumulative_response_time),str(iti_onset/60),str(iti_dur/60),str(stim_onset/60),str(stim_dur),str(stim_dur/60),str(blank_onset/60),str(blank_dur/60),str(mask_onset/60),str(mask_dur/60),str(response_onset/60),str(response_dur/60),target_side,version,str(currentDirection),str(presentation_duration)+'\n']))
+				output_file.write(','.join([str(subid),str(session),str(trial),str(target_side),str(side),str(sub_response),str(correct),str(response_time),str(cumulative_response_time),str(iti_onset/60),str(iti_dur/60),str(stim_onset/60),str(stim_dur),str(stim_dur/60),str(blank_onset/60),str(blank_dur/60),str(mask_onset/60),str(mask_dur/60),str(response_onset/60),str(response_dur/60),target_side,version,str(currentDirection),str(presentation_duration)+'\n']))
 				output_file.flush()
 
 	if not responded:
@@ -369,7 +369,7 @@ for shuffled_trial in trial_order:
 			correct = 1
 		else:
 			correct = 0 #0
-		output_file.write(','.join([str(trial),str(target_side),str(side),'NA',str(correct),'NA','NA',str(iti_onset/60),str(iti_dur/60),str(stim_onset/60),str(stim_dur),str(stim_dur/60),str(blank_onset/60),str(blank_dur/60),str(mask_onset/60),str(mask_dur/60),str(response_onset/60),str(response_dur/60),str(target_side),str(version),str(currentDirection),str(presentation_duration)+'\n']))
+		output_file.write(','.join([str(subid),str(session),str(trial),str(target_side),str(side),'NA',str(correct),'NA','NA',str(iti_onset/60),str(iti_dur/60),str(stim_onset/60),str(stim_dur),str(stim_dur/60),str(blank_onset/60),str(blank_dur/60),str(mask_onset/60),str(mask_dur/60),str(response_onset/60),str(response_dur/60),str(target_side),str(version),str(currentDirection),str(presentation_duration)+'\n']))
 		output_file.flush()
 	#timing update
 	last_trial_dur = iti_dur + stim_dur + blank_dur + mask_dur + response_dur
@@ -400,6 +400,12 @@ for shuffled_trial in trial_order:
 
 	if mask_dur > 12:
 		mask_dur = 12
+
+	if mask_dur < 1:
+		mask_dur = 1
+
+	if stim_dur > 12:
+		stim_dur = 12
 
 
 output_file.close()
