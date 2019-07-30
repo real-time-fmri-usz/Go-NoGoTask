@@ -36,7 +36,7 @@ fixation_dur = 12			# fixation before stimulus_strength
 blank_dur_pre = 3
 pause_dur = 1200
 #strength_prob = [.5,.5]   # probability of the trial being strong or weak
-stim_size = .04             #size of the stimulus on screen
+stim_size = .08             #size of the stimulus on screen
 mask_size_ratio = 1.6         #how much proptionally bigger is mask
 #stim_line_width =  200      # width of diamond frame lines
 blocker_size = .15         #size of black boxes the mask the edge of the stimulus (pick a value between 0 and 1. 0 blocks nothing, 1 blocks a whole half)
@@ -139,7 +139,7 @@ frame_example = visual.ImageStim(
 	pos=[0,-50])
 
 
-instructions_text5 = visual.TextStim(win, text='Press the "%s" key if the frame is preceded by a diamond missing a point on its %s side.'%(response_keys[go_side],go_side), height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,0.0))
+instructions_text5 = visual.TextStim(win, text='Press the "%s" key if the frame is preceded by a diamond missing a point on its %s side.'%go_side,go_side), height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,0.0))
 instructions_text6 = visual.TextStim(win, text='Press nothing if the frame is preceded by a diamond missing a point on its %s side.'%nogo_side, height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,-0.1))
 instructions_text7 = visual.TextStim(win, text='Points will be missing from the left and right with equal frequency,', height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,-0.1))
 instructions_text8 = visual.TextStim(win, text='please keep this in mind when making your response.', height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,-0.2))
@@ -164,8 +164,8 @@ for instruction in instructions2_text:
 example_text = visual.TextStim(win, text='Here are some practice examples . . .', height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,0.0))
 get_ready_text = [visual.TextStim(win, text='Now let\'s move on the the real experiment.', height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,0.0)),
 				  visual.TextStim(win, text='Get ready . . .', height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,-0.1))]
-press_left_text = visual.TextStim(win, text='Press the "%s" key'%response_keys['left'], color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,stim_size+.2))
-press_right_text = visual.TextStim(win, text='Press the "%s" key'%response_keys['right'], color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,stim_size+.2))
+press_left_text = visual.TextStim(win, text='Press the left key', color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,stim_size+.2))
+press_right_text = visual.TextStim(win, text='Press the right key', color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,stim_size+.2))
 press_nothing_text = visual.TextStim(win, text='Press nothing', color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,stim_size+.2))
 
 ### Timing ###
@@ -177,7 +177,7 @@ experiment_clock = core.Clock()
 time_stamp = strftime('%d-%m-%Y_%H:%M:%S').replace(':','_')
 output_file_path = 'results/%s_%s_%s_%s_%s_no_catch.csv'%(subid,run,stimulus_strength,go_side,time_stamp)
 output_file = open(output_file_path,'w+')
-output_file.write('trial,trial_type,side,response,correct,strength,response_time,cumulative_response_time,fixation_onset,fixation_dur,stim_onset,stim_dur,blank_onset,blank_dur,mask_onset,mask_dur,response_onset,response_dur,go_side,Staircase_stimulus,Presentation Duration\n')
+output_file.write('subid, run, trial,trial_type,side,response,correct,strength,response_time,cumulative_response_time,fixation_onset,fixation_dur,stim_onset,stim_dur,blank_onset,blank_dur,mask_onset,mask_dur,response_onset,response_dur,go_side,Staircase_stimulus,Presentation Duration\n')
 output_file.flush()
 
 
@@ -323,7 +323,7 @@ for b in range(len(block_list)):
 			for frames in range(trial_duration):
 				fixation.draw()
 				win.flip()
-			output_file.write(','.join([str(trial+1),'Rest','Rest','Rest','Rest','Rest','Rest','Rest',str(elapse_time/60),str(trial_list_block['duration'][trial]),'Rest','Rest','Rest','Rest','Rest','Rest','Rest','Rest','Rest','Rest',str(trial_list_block['duration'][trial])+'\n']))
+			output_file.write(','.join([str(subid),str(run),str(trial+1),'Rest','Rest','Rest','Rest','Rest','Rest','Rest',str(elapse_time/60),str(trial_list_block['duration'][trial]),'Rest','Rest','Rest','Rest','Rest','Rest','Rest','Rest','Rest','Rest',str(trial_list_block['duration'][trial])+'\n']))
 			output_file.flush()
 			last_trial_dur = trial_duration
 
@@ -395,7 +395,7 @@ for b in range(len(block_list)):
 							correct = 1
 						else:
 							correct = 0
-						output_file.write(','.join([str(trial+1),str(go_type),str(side),str(sub_response),str(correct),strength,str(response_time),str(cumulative_response_time),str(fixation_onset/60),str(fixation_dur/60),str(stim_onset/60),str(stim_dur[strength]/60),str(blank_onset/60),str(blank_dur[strength]/60),str(mask_onset/60),str(mask_dur[strength]/60),str(response_onset/60),str(response_dur/60),go_side,stimulus_strength,str(presentation_duration)+'\n']))
+						output_file.write(','.join([str(subid),str(run),str(trial+1),str(go_type),str(side),str(sub_response),str(correct),strength,str(response_time),str(cumulative_response_time),str(fixation_onset/60),str(fixation_dur/60),str(stim_onset/60),str(stim_dur[strength]/60),str(blank_onset/60),str(blank_dur[strength]/60),str(mask_onset/60),str(mask_dur[strength]/60),str(response_onset/60),str(response_dur/60),go_side,stimulus_strength,str(presentation_duration)+'\n']))
 						output_file.flush()
 
 			if not responded:
@@ -403,7 +403,7 @@ for b in range(len(block_list)):
 					correct = 1
 				else:
 					correct = 0
-				output_file.write(','.join([str(trial+1),str(go_type),str(side),'NA',str(correct),strength,'NA','NA',str(fixation_onset/60),str(fixation_dur/60),str(stim_onset/60),str(stim_dur[strength]/60),str(blank_onset/60),str(blank_dur[strength]/60),str(mask_onset/60),str(mask_dur[strength]/60),str(response_onset/60),str(response_dur/60),str(go_side),str(stimulus_strength),str(presentation_duration)+'\n']))
+				output_file.write(','.join([str(subid),str(run),str(trial+1),str(go_type),str(side),'NA',str(correct),strength,'NA','NA',str(fixation_onset/60),str(fixation_dur/60),str(stim_onset/60),str(stim_dur[strength]/60),str(blank_onset/60),str(blank_dur[strength]/60),str(mask_onset/60),str(mask_dur[strength]/60),str(response_onset/60),str(response_dur/60),str(go_side),str(stimulus_strength),str(presentation_duration)+'\n']))
 				output_file.flush()
 
 			last_trial_dur = fixation_dur + blank_dur_pre + stim_dur[strength] + blank_dur[strength] + mask_dur[strength] + response_dur
