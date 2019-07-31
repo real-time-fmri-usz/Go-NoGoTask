@@ -321,7 +321,7 @@ for b in range(len(block_list)):
 			elapse_time += last_trial_dur
 			trial_duration = int(trial_list_block['duration'][trial] * 60)
 			for frames in range(trial_duration):
-				fixation.draw()
+			
 				win.flip()
 			output_file.write(','.join([str(subid),str(run),str(trial+1),'Rest','Rest','Rest','Rest','Rest','Rest','Rest',str(elapse_time/60),str(trial_list_block['duration'][trial]),'Rest','Rest','Rest','Rest','Rest','Rest','Rest','Rest','Rest','Rest',str(trial_list_block['duration'][trial])+'\n']))
 			output_file.flush()
