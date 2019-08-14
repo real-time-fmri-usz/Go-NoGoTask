@@ -321,7 +321,7 @@ for b in range(len(block_list)):
 			elapse_time += last_trial_dur
 			trial_duration = int(trial_list_block['duration'][trial] * 60)
 			for frames in range(trial_duration):
-				
+
 				win.flip()
 			output_file.write(','.join([str(subid),str(run),str(trial+1),'Rest','Rest','Rest','Rest','Rest','Rest','Rest',str(elapse_time/60),str(trial_list_block['duration'][trial]),'Rest','Rest','Rest','Rest','Rest','Rest','Rest','Rest','Rest','Rest',str(trial_list_block['duration'][trial])+'\n']))
 			output_file.flush()
@@ -361,21 +361,22 @@ for b in range(len(block_list)):
 			for p in range(int(blank_dur_pre)):
 				win.flip()
 
-			port.setData(0)
 			if go_type == 'go' and strength == 'weak':
-				win.callOnFlip(port.setData, 2)
-			elif go_type == 'go' and strength == 'strong':
-				win.callOnFlip(port.setData,3)
+				win.callOnFlip(port.setData, int("00000001", 2))
+
 			elif go_type == 'nogo' and strength == 'weak':
-				win.callOnFlip(port.setData,4)
-			elif go_type == 'nogo' and strength == 'strong':
-				win.callOnFlip(port.setData,5)
+				win.callOnFlip(port.setData,int("00000011", 2))
+
 
 			start_stimulus = experiment_clock.getTime()
 			for stim in range(int(stim_dur[strength])):
 				white_diamond.draw()
 				blockers[side].draw()
 				win.flip()
+				if go_type == 'go' and strength == 'strong':
+					win.callOnFlip(port.setData, int("00000010", 2))
+				elif go_type == 'nogo' and strength == 'strong':
+					win.callOnFlip(port.setData,int("00000100", 2))
 			presentation_duration = experiment_clock.getTime() - start_stimulus
 			port.setData(0)
 			#blank presentation
@@ -400,12 +401,15 @@ for b in range(len(block_list)):
 						cumulative_response_time = round(experiment_clock.getTime(),3)
 						response_time = round(experiment_clock.getTime() - start_response,3)
 						sub_response = response_keys_inv[response[0][0]]
+						port.setData(129)
 						if go_type == 'go':
 							correct = 1
 						elif sub_response == side:
 							correct = 1
 						else:
 							correct = 0
+
+
 						output_file.write(','.join([str(subid),str(run),str(trial+1),str(go_type),str(side),str(sub_response),str(correct),strength,str(response_time),str(cumulative_response_time),str(fixation_onset/60),str(fixation_dur/60),str(stim_onset/60),str(stim_dur[strength]/60),str(blank_onset/60),str(blank_dur[strength]/60),str(mask_onset/60),str(mask_dur[strength]/60),str(response_onset/60),str(response_dur/60),go_side,stimulus_strength,str(presentation_duration)+'\n']))
 						output_file.flush()
 
@@ -418,6 +422,7 @@ for b in range(len(block_list)):
 				output_file.flush()
 
 			last_trial_dur = fixation_dur + blank_dur_pre + stim_dur[strength] + blank_dur[strength] + mask_dur[strength] + response_dur
+			port.setData(0)
 
 	pause_text = visual.TextStim(win, text='Pause', height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,0.0))
 	if not b == 2:
