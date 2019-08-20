@@ -24,7 +24,7 @@ dlg.addField('Language', choices = ['en', 'de'])
 
 exp_input = dlg.show()
 
-#port = parallel.ParallelPort(0x1FF8)
+port = parallel.ParallelPort(0x1FF8)
 ### Parameters ###
 
 ###### EDIT PARAMETERS BELOW #######
