@@ -24,7 +24,7 @@ dlg.addField('Language', choices = ['en', 'de'])
 
 exp_input = dlg.show()
 
-port = parallel.ParallelPort(0x1FF8)
+#port = parallel.ParallelPort(0x1FF8)
 ### Parameters ###
 
 ###### EDIT PARAMETERS BELOW #######
@@ -75,10 +75,6 @@ if exp_input[5] == 'yes':
 else:
 	show_practice = False
 
-
-
-exp_input = dlg.show()
-
 language = exp_input[6]
 
 
@@ -92,8 +88,8 @@ aspect = float(win.size[1])/float(win.size[0])
 print(aspect)
 stim_width = stim_size
 stim_height = stim_size/aspect
-fontsize = 0.06
-wrapwidth = 80
+fontsize = 0.05
+wrapwidth = 100
 #Shapes
 mask = visual.ShapeStim(win, lineColor='white', fillColor='white', vertices=((-1*stim_width*mask_size_ratio, 0), (0, stim_height*mask_size_ratio), (stim_width*mask_size_ratio, 0), (0,-1*stim_height*mask_size_ratio)))
 white_diamond = visual.ShapeStim(win, lineColor='white', fillColor='white', vertices=((-1*stim_width, 0), (0, stim_height), (stim_width, 0), (0,-1*stim_height)))
@@ -150,7 +146,7 @@ frame_example = visual.ImageStim(
 if language == 'en':
 
 	#instructions_en
-	instructions_text1 = visual.TextStim(win, text='In each trial of this experiment a diamond shape will appear in the middle of the screen',
+	instructions_text1 = visual.TextStim(win, text='In some trials of this experiment a diamond shape will appear in the middle of the screen',
 										font = 'Arial',
 										height = fontsize,
 										color = 'white',
@@ -182,21 +178,30 @@ if language == 'en':
 										alignVert = 'center',
 										pos=(0.0,0.2))
 
-	instructions_text5 = visual.TextStim(win, text='Press the "%s" key if the frame is preceded by a diamond missing a point on its %s side.'%(go_side,go_side),
+	instructions_text5 = visual.TextStim(win, text='Press the "%s" key as fasst as possible as soon as you the frame!'%(go_side),
 										font = 'Arial',
 										height = fontsize,
 										color = 'white',
 										alignHoriz = 'center',
 										alignVert = 'center',
+										pos=(0.0,.1))
+
+	instructions_text6 = visual.TextStim(win, text='However, press nothing if the frame is preceded by a diamond missing a point on its %s side.'%nogo_side,
+										height = fontsize,
+										color = 'white',
+										font = 'Arial',
+										alignHoriz = 'center',
+										alignVert = 'center',
 										pos=(0.0,0.0))
 
-	instructions_text6 = visual.TextStim(win, text='Press nothing if the frame is preceded by a diamond missing a point on its %s side.'%nogo_side,
+	instructions_text6a = visual.TextStim(win, text='Also, press the "%s" key if the frame is preceded by a diamond missing a point on its %s side.'%(go_side,go_side),
 										height = fontsize,
 										color = 'white',
 										font = 'Arial',
 										alignHoriz = 'center',
 										alignVert = 'center',
 										pos=(0.0,-0.1))
+
 
 	instructions_text7 = visual.TextStim(win, text='Trials where you have to press a button will be more frequent!',
 										height = fontsize,
@@ -281,7 +286,7 @@ if language == 'en':
 
 else:
 	#instructions_de
-	instructions_text1 = visual.TextStim(win, text='In jedem Durchgang wird eine Diamantenform in der Mitte des Bildschirms erscheinen.',
+	instructions_text1 = visual.TextStim(win, text='In manchen Durchgängen des Experiments wird eine Diamantenform in der Mitte des Bildschirms erscheinen.',
 										font = 'Arial',
 										height = fontsize,
 										color = 'white',
@@ -320,21 +325,29 @@ else:
 		go_side_de = 'rechte'
 		nogo_side_de = 'linke'
 
-	instructions_text5 = visual.TextStim(win, text='Drücke die "%s" Taste, wenn dem Diamanten vorher die %s Seite gefehlt hat!'%(go_side_de,go_side_de),
+	instructions_text5 = visual.TextStim(win, text='Drücke die "%s" Taste, sobald du den Rahmen siehst!'%go_side_de,
 										font = 'Arial',
 										height = fontsize,
 										color = 'white',
+										alignHoriz = 'center',
+										alignVert = 'center',
+										pos=(0.0,0.1))
+
+	instructions_text6 = visual.TextStim(win, text='ABER: Drücke nichts, wenn dem Diamanten vorher die %s Seite gefehlt hat!'%nogo_side_de,
+										height = fontsize,
+										color = 'white',
+										font = 'Arial',
 										alignHoriz = 'center',
 										alignVert = 'center',
 										pos=(0.0,0.0))
 
-	instructions_text6 = visual.TextStim(win, text='Drücke nichts, wenn dem Diamanten vorher die %s Seite gefehlt hat!'%nogo_side_de,
-										height = fontsize,
-										color = 'white',
-										font = 'Arial',
-										alignHoriz = 'center',
-										alignVert = 'center',
-										pos=(0.0,-0.1))
+	instructions_text6a = visual.TextStim(win, text='Drücke die "%s" Taste auch, wenn dem Diamanten vorher die %s Seite gefehlt hat.'%(go_side_de,go_side_de),
+											font = 'Arial',
+											height = fontsize,
+											color = 'white',
+											alignHoriz = 'center',
+											alignVert = 'center',
+											pos=(0.0,-.2))
 
 	instructions_text7 = visual.TextStim(win, text='Durchgänge, in denen du eine Taste drücken musst, sind häufiger!',
 										height = fontsize,
@@ -486,6 +499,7 @@ if show_practice:
 	instructions_header.draw()
 	instructions_text5.draw()
 	instructions_text6.draw()
+	instructions_text6a.draw()
 	win.flip()
 	event.waitKeys(keyList='space')
 
@@ -632,28 +646,28 @@ for b in range(len(block_list)):
 				win.flip()
 
 
-			if go_type == 'go' and strength == 'weak':
-				win.callOnFlip(port.setData, int("00000001", 2))
-			# elif go_type == 'go' and strength == 'strong':
-			# 	win.callOnFlip(port.setData, int("00000010", 2))
-			elif go_type == 'nogo' and strength == 'weak':
-				win.callOnFlip(port.setData,int("00000011", 2))
-			# elif go_type == 'nogo' and strength == 'strong':
-			# 	win.callOnFlip(port.setData,int("00000100", 2))
-			elif go_type == 'catch':
-				win.callOnFlip(port.setData,int("00000101", 2))
+			# if go_type == 'go' and strength == 'weak':
+			# 	win.callOnFlip(port.setData, int("00000001", 2))
+			# # elif go_type == 'go' and strength == 'strong':
+			# # 	win.callOnFlip(port.setData, int("00000010", 2))
+			# elif go_type == 'nogo' and strength == 'weak':
+			# 	win.callOnFlip(port.setData,int("00000011", 2))
+			# # elif go_type == 'nogo' and strength == 'strong':
+			# # 	win.callOnFlip(port.setData,int("00000100", 2))
+			# elif go_type == 'catch':
+			# 	win.callOnFlip(port.setData,int("00000101", 2))
 			start_stimulus = experiment_clock.getTime()
 			for stim in range(int(stim_dur[strength])):
 				white_diamond.draw()
 				if side != 'NA':
 					blockers[side].draw()
 				win.flip()
-				if go_type == 'go' and strength == 'strong':
-					win.callOnFlip(port.setData, int("00000010", 2))
-				elif go_type == 'nogo' and strength == 'strong':
-					win.callOnFlip(port.setData,int("00000100", 2))
+				# if go_type == 'go' and strength == 'strong':
+				# 	win.callOnFlip(port.setData, int("00000010", 2))
+				# elif go_type == 'nogo' and strength == 'strong':
+				# 	win.callOnFlip(port.setData,int("00000100", 2))
 			presentation_duration = experiment_clock.getTime() - start_stimulus
-			port.setData(0)
+			#port.setData(0)
 			#blank presentation
 			for m in range(int(blank_dur[strength])):
 				win.flip()
@@ -676,7 +690,7 @@ for b in range(len(block_list)):
 						cumulative_response_time = round(experiment_clock.getTime(),3)
 						response_time = round(experiment_clock.getTime() - start_response,3)
 						sub_response = response_keys_inv[response[0][0]]
-						port.setData(129)
+						# port.setData(129)
 						if go_type == 'go':
 							correct = 1
 						elif sub_response == side:
@@ -699,7 +713,7 @@ for b in range(len(block_list)):
 				output_file.flush()
 
 			last_trial_dur = fixation_dur + blank_dur_pre + stim_dur[strength] + blank_dur[strength] + mask_dur[strength] + response_dur
-			port.setData(0)
+			#port.setData(0)
 	pause_text = visual.TextStim(win, text='Pause', height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,0.0))
 	if not b == 2:
 		for p in range(int(pause_dur)):
