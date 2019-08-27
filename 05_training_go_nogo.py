@@ -21,8 +21,8 @@ import os
 
 ###### EDIT PARAMETERS BELOW #######
 
-num_trials_cue = 50        # number of trials in the experiment on target side
-num_trials_catch = 10
+num_trials_cue = 20        # number of trials in the experiment on target side
+num_trials_catch = 6
 num_trials_total = num_trials_cue + num_trials_catch
 initialStim_dur = 1     # in frames
 blank_dur = 2        # time a blank screen between stim and mask is on screen [strong,weak,catch]
@@ -57,6 +57,7 @@ dlg.addField('Session:')
 dlg.addField('Scanner', choices = ['yes','no'])
 dlg.addField('Version:', choices = ['oddball'])
 dlg.addField('Language', choices = ['en', 'de'])
+dlg.addField('Go Side', choices = ['left','right'])
 exp_input = dlg.show()
 
 subid = exp_input[0]
@@ -67,6 +68,7 @@ else:
 	scanner = False
 version = exp_input[3]
 language = exp_input[4]
+
 
 #get shuffled list of trials
 trial_states = {}
@@ -85,6 +87,11 @@ for i in range(int(num_trials_catch)):
 trial_order = list(range(1,(1+num_trials_cue+num_trials_catch)))
 random.shuffle(trial_order)
 
+go_side = exp_input[5]
+if go_side == 'left':
+	nogo_side = 'right'
+else:
+	nogo_side = 'left'
 
 ### Visuals ###
 
@@ -137,7 +144,19 @@ practice_clock = core.Clock()
 experiment_clock = core.Clock()
 
 
+# Create the results folder
 
+if not os.path.exists('results'):
+    os.makedirs('results')
+
+### Results Logging ###
+time_stamp = strftime('%d-%m-%Y_%H:%M:%S').replace(':','_')
+output_file_path = 'results/%s_%s_constant_press.csv'%(subid,time_stamp)
+output_file = open(output_file_path,'w+')
+
+###TO DO
+output_file.write('subid,trial,trial_type,stim_side,response,response_time,cumulative_response_time,iti_onset\n')
+output_file.flush()
 
 ### Quitting ###
 event.globalKeys.clear()
@@ -222,7 +241,26 @@ for shuffled_trial in trial_order:
 			#fixation.draw()
 			black_diamond.draw()
 		win.flip()
+		#response collection
+		if not responded:
+			response = event.getKeys(keyList=reskeys_list, timeStamped=True)
+			if len(response) > 0:
+				responded = True
+				cumulative_response_time = round(experiment_clock.getTime(),3)
+				response_time = round(experiment_clock.getTime() - start_response,3)
+				sub_response = response_keys_inv[response[0][0]]
+				if version == 'oddball':
+					if sub_response == side:
+						correct = 1
+					else:
+						correct = 0 #0
+				output_file.write(','.join([str(subid),str(trial),str(target_side),str(side),str(sub_response),str(response_time),str(cumulative_response_time),str(iti_onset/60)+'\n']))
+				output_file.flush()
 
+	if not responded:
+		correct = 0
+		output_file.write(','.join([str(subid),str(trial),str(target_side),str(side),'NA','NA','NA',str(iti_onset/60)+'\n']))
+		output_file.flush()
 	#timing update
 	last_trial_dur = iti_dur + stim_dur + blank_dur + mask_dur + response_dur
 
