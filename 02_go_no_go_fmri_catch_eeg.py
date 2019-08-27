@@ -15,7 +15,7 @@ import pandas as pd
 #Experimenter input
 dlg = gui.Dlg(title = 'Experiment Parameters')
 dlg.addField('Subject ID:')
-dlg.addField('Run', choices = ['1','2','3','4',])
+dlg.addField('Run', )
 dlg.addField('Scanner', choices = ['yes','no'])
 dlg.addField('Stimulus Threshold (in Frames):')
 dlg.addField('Go Side', choices = ['left','right'])
