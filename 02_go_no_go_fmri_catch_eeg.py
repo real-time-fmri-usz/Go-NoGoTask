@@ -18,7 +18,7 @@ dlg.addField('Subject ID:')
 dlg.addField('Run', )
 dlg.addField('Scanner', choices = ['yes','no'])
 dlg.addField('Stimulus Threshold (in Frames):')
-dlg.addField('Go Side', choices = ['left','right'])
+dlg.addField('Go Side', choices = ['right'])
 dlg.addField('Practice', choices = ['yes','no'])
 dlg.addField('Language', choices = ['en', 'de'])
 
@@ -88,8 +88,8 @@ aspect = float(win.size[1])/float(win.size[0])
 print(aspect)
 stim_width = stim_size
 stim_height = stim_size/aspect
-fontsize = 0.05
-wrapwidth = 100
+fontsize = 0.055
+wrapwidth = 80
 #Shapes
 mask = visual.ShapeStim(win, lineColor='white', fillColor='white', vertices=((-1*stim_width*mask_size_ratio, 0), (0, stim_height*mask_size_ratio), (stim_width*mask_size_ratio, 0), (0,-1*stim_height*mask_size_ratio)))
 white_diamond = visual.ShapeStim(win, lineColor='white', fillColor='white', vertices=((-1*stim_width, 0), (0, stim_height), (stim_width, 0), (0,-1*stim_height)))
@@ -131,7 +131,7 @@ right_example = visual.ImageStim(
 					win=win,
 					image="right_diamond.png",
 					units="pix",
-					pos=[150,-50])
+					pos=[-150,-50])
 
 frame_example = visual.ImageStim(
 	win=win,
@@ -146,7 +146,7 @@ frame_example = visual.ImageStim(
 if language == 'en':
 
 	#instructions_en
-	instructions_text1 = visual.TextStim(win, text='In some trials of this experiment a diamond shape will appear in the middle of the screen',
+	instructions_text1 = visual.TextStim(win, text='Press the right button as fast as possible when you see this frame.',
 										font = 'Arial',
 										height = fontsize,
 										color = 'white',
@@ -154,7 +154,7 @@ if language == 'en':
 										alignVert = 'center',
 										pos=(0.0,0.3))
 
-	instructions_text2 = visual.TextStim(win, text='It will have a point missing from its left side or its right side.',
+	instructions_text2 = visual.TextStim(win, text='If the frame is preceded by a diamond with a missing edge on its right side, press the right button!',
 										font = 'Arial',
 										height = fontsize,
 										color = 'white',
@@ -162,88 +162,23 @@ if language == 'en':
 										alignVert = 'center',
 										pos=(0.0,0.3))
 
-	instructions_text3 = visual.TextStim(win, text='left side missing                 right side missing',
+	instructions_text3 = visual.TextStim(win, text='However, do not press any button if the frame is preceded by a diamond with a missing edge on its left side!',
 										font = 'Arial',
 										height = fontsize,
 										color = 'white',
 										alignHoriz = 'center',
 										alignVert = 'center',
-										pos=(0.0,-0.5))
+										pos=(0.0,0.3))
 
-	instructions_text4 = visual.TextStim(win, text='The diamond will be followed immediately by a frame shape.',
+	instructions_text4 = visual.TextStim(win, text='Keep in mind: In the experiment, the speed of the diamond and frame presentation will be fast! ',
 										height = fontsize,
 										font = 'Arial',
 										color = 'white',
-										alignHoriz = 'center',
-										alignVert = 'center',
-										pos=(0.0,0.2))
-
-	instructions_text5 = visual.TextStim(win, text='Press the "%s" key as fasst as possible as soon as you the frame!'%(go_side),
-										font = 'Arial',
-										height = fontsize,
-										color = 'white',
-										alignHoriz = 'center',
-										alignVert = 'center',
-										pos=(0.0,.1))
-
-	instructions_text6 = visual.TextStim(win, text='However, press nothing if the frame is preceded by a diamond missing a point on its %s side.'%nogo_side,
-										height = fontsize,
-										color = 'white',
-										font = 'Arial',
 										alignHoriz = 'center',
 										alignVert = 'center',
 										pos=(0.0,0.0))
 
-	instructions_text6a = visual.TextStim(win, text='Also, press the "%s" key if the frame is preceded by a diamond missing a point on its %s side.'%(go_side,go_side),
-										height = fontsize,
-										color = 'white',
-										font = 'Arial',
-										alignHoriz = 'center',
-										alignVert = 'center',
-										pos=(0.0,-0.1))
 
-
-	instructions_text7 = visual.TextStim(win, text='Trials where you have to press a button will be more frequent!',
-										height = fontsize,
-										font = 'Arial',
-										color = 'white',
-										alignHoriz = 'center',
-										alignVert = 'center',
-										pos=(0.0,-0.1))
-
-	instructions_text8 = visual.TextStim(win, text='please keep this in mind when making your response.',
-										height = fontsize,
-										font = 'Arial',
-										color = 'white',
-										alignHoriz = 'center',
-										alignVert = 'center',
-										pos=(0.0,-0.2))
-
-
-
-	instructions2_text = [visual.TextStim(win, text='Great job!',
-										height = fontsize,
-										font = 'Arial',
-										color = 'white',
-										alignHoriz = 'center',
-										alignVert = 'center',
-										pos=(0.0,0.1)),
-						visual.TextStim(win, text='In the real experiment you will only have %s seconds to respond.'%(round(response_dur*0.0167,1)),
-						height = fontsize,
-						font = 'Arial',
-						color = 'white',
-						alignHoriz = 'center',
-						alignVert = 'center',
-						pos=(0.0,0.0))]
-
-	#mis
-	example_text = visual.TextStim(win, text='Here are some practice examples . . .',
-									font = 'Arial',
-									height = fontsize,
-									color = 'white',
-									alignHoriz = 'center',
-									alignVert = 'center',
-									pos=(0.0,0.0))
 
 	get_ready_text = [visual.TextStim(win, text='Now let\'s move on the the real experiment.',
 										height = fontsize,
@@ -260,7 +195,7 @@ if language == 'en':
 										alignVert = 'center',
 										pos=(0.0,-0.1))]
 
-	press_left_text = visual.TextStim(win, text='Press the left key',
+	press_left_text = visual.TextStim(win, text='Press left',
 										height = 0.075,
 										font = 'Arial',
 										color = 'white',
@@ -268,7 +203,7 @@ if language == 'en':
 										alignVert = 'center',
 										pos=(0.0,stim_size+.2))
 
-	press_right_text = visual.TextStim(win, text='Press the right key',
+	press_right_text = visual.TextStim(win, text='Press right',
 	 									color = 'white',
 										font = 'Arial',
 										height = 0.075,
@@ -286,7 +221,7 @@ if language == 'en':
 
 else:
 	#instructions_de
-	instructions_text1 = visual.TextStim(win, text='In manchen Durchgängen des Experiments wird eine Diamantenform in der Mitte des Bildschirms erscheinen.',
+	instructions_text1 = visual.TextStim(win, text='Drücke die rechte Taste so schnell wie möglich, wenn du diesen Rahmen siehst.',
 										font = 'Arial',
 										height = fontsize,
 										color = 'white',
@@ -294,7 +229,7 @@ else:
 										alignVert = 'center',
 										pos=(0.0,0.3))
 
-	instructions_text2 = visual.TextStim(win, text='Der Diamant wird entweder links oder rechts abgeschnitten sein.',
+	instructions_text2 = visual.TextStim(win, text='Drücke die rechte Taste, wenn dem Rahmen ein Diamant vorangeht, dem die rechte Seite fehlt!',
 										font = 'Arial',
 										height = fontsize,
 										color = 'white',
@@ -302,94 +237,22 @@ else:
 										alignVert = 'center',
 										pos=(0.0,0.3))
 
-	instructions_text3 = visual.TextStim(win, text='Linke Seite abgeschnitten                 Rechte Seite abgeschnitten',
+	instructions_text3 = visual.TextStim(win, text='Aber, drücke keine Taste, wenn dem Rahmen ein Diamant vorangeht, dem die linke Seite fehlt!',
 										font = 'Arial',
 										height = fontsize,
 										color = 'white',
 										alignHoriz = 'center',
 										alignVert = 'center',
-										pos=(0.0,-0.5))
+										pos=(0.0,0.3))
 
-	instructions_text4 = visual.TextStim(win, text='Auf diesen Diamant wird jeweils ein schwarzer Diamant mit Rahmen folgen.',
-										height = fontsize,
-										font = 'Arial',
-										color = 'white',
-										alignHoriz = 'center',
-										alignVert = 'center',
-										pos=(0.0,0.2))
-
-	if go_side == 'left':
-		go_side_de = 'linke'
-		nogo_side_de = 'rechte'
-	else:
-		go_side_de = 'rechte'
-		nogo_side_de = 'linke'
-
-	instructions_text5 = visual.TextStim(win, text='Drücke die "%s" Taste, sobald du den Rahmen siehst!'%go_side_de,
+	instructions_text4 = visual.TextStim(win, text='Denke daran: Im Experiment ist die Geschwindigkeit der Diamanten und Rahmen sehr hoch!',
 										font = 'Arial',
 										height = fontsize,
 										color = 'white',
-										alignHoriz = 'center',
-										alignVert = 'center',
-										pos=(0.0,0.1))
-
-	instructions_text6 = visual.TextStim(win, text='ABER: Drücke nichts, wenn dem Diamanten vorher die %s Seite gefehlt hat!'%nogo_side_de,
-										height = fontsize,
-										color = 'white',
-										font = 'Arial',
 										alignHoriz = 'center',
 										alignVert = 'center',
 										pos=(0.0,0.0))
 
-	instructions_text6a = visual.TextStim(win, text='Drücke die "%s" Taste auch, wenn dem Diamanten vorher die %s Seite gefehlt hat.'%(go_side_de,go_side_de),
-											font = 'Arial',
-											height = fontsize,
-											color = 'white',
-											alignHoriz = 'center',
-											alignVert = 'center',
-											pos=(0.0,-.2))
-
-	instructions_text7 = visual.TextStim(win, text='Durchgänge, in denen du eine Taste drücken musst, sind häufiger!',
-										height = fontsize,
-										font = 'Arial',
-										color = 'white',
-										alignHoriz = 'center',
-										alignVert = 'center',
-										pos=(0.0,-0.1))
-
-	instructions_text8 = visual.TextStim(win, text='Bitte denke daran, wenn du antwortest.',
-										height = fontsize,
-										font = 'Arial',
-										color = 'white',
-										alignHoriz = 'center',
-										alignVert = 'center',
-										pos=(0.0,-0.2))
-
-
-
-	instructions2_text = [visual.TextStim(win, text='Gut gemacht!',
-										height = fontsize,
-										font = 'Arial',
-										color = 'white',
-										alignHoriz = 'center',
-										alignVert = 'center',
-										pos=(0.0,0.1)),
-						visual.TextStim(win, text='Im Hauptexperiment wirst du nur %s Sekunden für deine Antwort haben.'%(round(response_dur*0.0167,1)),
-						height = fontsize,
-						font = 'Arial',
-						color = 'white',
-						alignHoriz = 'center',
-						alignVert = 'center',
-						pos=(0.0,0.0))]
-
-	#mis
-	example_text = visual.TextStim(win, text='Hier sind ein paar Übungsdurchgänge...',
-									font = 'Arial',
-									height = fontsize,
-									color = 'white',
-									alignHoriz = 'center',
-									alignVert = 'center',
-									pos=(0.0,0.0))
 
 	get_ready_text = [visual.TextStim(win, text='Nun folgt das richtige Experiment',
 										height = fontsize,
@@ -438,14 +301,6 @@ instructions_text1.wrapWidth = wrapwidth
 instructions_text2.wrapWidth = wrapwidth
 instructions_text3.wrapWidth = wrapwidth
 instructions_text4.wrapWidth = wrapwidth
-instructions_text5.wrapWidth = wrapwidth
-instructions_text6.wrapWidth = wrapwidth
-instructions_text7.wrapWidth = wrapwidth
-instructions_text8.wrapWidth = wrapwidth
-
-for instruction in instructions2_text:
-	instruction.wrapWidth = wrapwidth
-
 
 ### Timing ###
 
@@ -476,91 +331,32 @@ if show_practice:
 	#intro to experiment
 	instructions_header.draw()
 	instructions_text1.draw()
+	frame_example.draw()
 	win.flip()
 	event.waitKeys(keyList='space')
 
 	#show missing corner shapes
 	instructions_header.draw()
 	instructions_text2.draw()
-	instructions_text3.draw()
-	left_example.draw()
 	right_example.draw()
+	frame_example.draw()
 	win.flip()
 	event.waitKeys(keyList='space')
 
 	#show frame shape
 	instructions_header.draw()
-	instructions_text4.draw()
+	instructions_text3.draw()
+	left_example.draw()
 	frame_example.draw()
 	win.flip()
 	event.waitKeys(keyList='space')
 
 	#tell what buttons to press
 	instructions_header.draw()
-	instructions_text5.draw()
-	instructions_text6.draw()
-	instructions_text6a.draw()
+	instructions_text4.draw()
 	win.flip()
 	event.waitKeys(keyList='space')
 
-	instructions_header.draw()
-	example_text.draw()
-	win.flip()
-	event.waitKeys(keyList='space')
-
-	for practice_side in ['left','right']:
-		instructions_header.draw()
-		win.flip()
-		core.wait(practice_iti_dur)
-		#press practice stim
-		practice_clock.reset()
-		while practice_clock.getTime() < practice_stim_dur:
-			instructions_header.draw()
-			white_diamond.draw()
-			blockers[practice_side].draw()
-			win.flip()
-		#blank screen
-		while practice_clock.getTime() < practice_stim_dur+practice_blank_dur:
-			instructions_header.draw()
-			win.flip()
-		#press mask
-		while practice_clock.getTime() < practice_stim_dur+practice_blank_dur+practice_mask_dur:
-			instructions_header.draw()
-			mask.draw()
-			black_diamond.draw()
-			if nogo_side == practice_side:
-				press_nothing_text.draw()
-			else:
-				if practice_side == 'left':
-					press_left_text.draw()
-				else:
-					press_right_text.draw()
-			win.flip()
-		#response
-		instructions_header.draw()
-		if nogo_side == practice_side:
-			press_nothing_text.draw()
-			win.flip()
-			core.wait(2)
-		else:
-			if practice_side == 'left':
-				press_left_text.draw()
-			else:
-				press_right_text.draw()
-			win.flip()
-			event.waitKeys(keyList=response_keys[practice_side])
-
-
-
-	#Post practice text, get ready for experiment
-	instructions_header.draw()
-	for instruction in instructions2_text:
-		instruction.draw()
-	instructions_text7.draw()
-	instructions_text8.draw()
-	win.flip()
-	event.waitKeys(keyList='space')
-	experiment_header.draw()
 	for get_ready in get_ready_text:
 		get_ready.draw()
 	win.flip()
