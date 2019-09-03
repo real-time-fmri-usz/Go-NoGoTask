@@ -309,7 +309,7 @@ experiment_clock = core.Clock()
 
 ### Results Logging ###
 time_stamp = strftime('%d-%m-%Y_%H:%M:%S').replace(':','_')
-output_file_path = 'results/%s_%s_%s_%s_%s.csv'%(subid,run,stimulus_strength,go_side,time_stamp)
+output_file_path = 'results/%s_%s_%s_%s_%s_short_training.csv'%(subid,run,stimulus_strength,go_side,time_stamp)
 output_file = open(output_file_path,'w+')
 output_file.write('subid,run,trial,trial_type,side,response,correct,strength,response_time,cumulative_response_time,fixation_onset,fixation_dur,stim_onset,stim_dur,blank_onset,blank_dur,mask_onset,mask_dur,response_onset,response_dur,go_side,Staircase_stimulus,Presentation Duration\n')
 output_file.flush()
@@ -494,7 +494,7 @@ for b in range(len(block_list)):
 						else:
 							correct = 0
 						if go_type == 'catch':
-							correct = 'NA'
+							correct = 1
 						output_file.write(','.join([str(subid),str(run),str(trial+1),str(go_type),str(side),str(sub_response),str(correct),strength,str(response_time),str(cumulative_response_time),str(fixation_onset/60),str(fixation_dur/60),str(stim_onset/60),str(stim_dur[strength]/60),str(blank_onset/60),str(blank_dur[strength]/60),str(mask_onset/60),str(mask_dur[strength]/60),str(response_onset/60),str(response_dur/60),go_side,stimulus_strength,str(presentation_duration)+'\n']))
 						output_file.flush()
 
@@ -502,7 +502,7 @@ for b in range(len(block_list)):
 				if go_type == 'nogo':
 					correct = 1
 				elif go_type == 'catch':
-					correct = 'NA'
+					correct = 0
 				else:
 					correct = 0
 				output_file.write(','.join([str(subid),str(run),str(trial+1),str(go_type),str(side),'NA',str(correct),strength,'NA','NA',str(fixation_onset/60),str(fixation_dur/60),str(stim_onset/60),str(stim_dur[strength]/60),str(blank_onset/60),str(blank_dur[strength]/60),str(mask_onset/60),str(mask_dur[strength]/60),str(response_onset/60),str(response_dur/60),str(go_side),str(stimulus_strength),str(presentation_duration)+'\n']))
