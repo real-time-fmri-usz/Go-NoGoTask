@@ -31,9 +31,10 @@ data = pandas.read_csv(file)
 clean_data = data[data['correct'] != 'Rest']
 only_correct = clean_data[clean_data['correct'] == '1'].groupby(['trial_type','strength']).count()
 all_data = clean_data.groupby(['trial_type','strength']).count()
-print('Number of all trials')
-print(all_data['correct'])
-print('')
-print('Number of correct Trials')
-print(only_correct['correct'])
+
+percentages_correct = only_correct/all_data
+
+print('Percentages correct trials per condition')
+print(percentages_correct['correct'] * 100)
+
 core.quit()
