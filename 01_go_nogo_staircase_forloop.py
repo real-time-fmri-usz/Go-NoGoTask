@@ -640,7 +640,7 @@ for shuffled_trial in trial_order:
 
 	if correct == 1:
 		correctInARow += 1
-		if correctInARow == 2:
+		if correctInARow == 3:
 			stim_dur -= stepsize
 			mask_dur += stepsize
 			correctInARow = 0
