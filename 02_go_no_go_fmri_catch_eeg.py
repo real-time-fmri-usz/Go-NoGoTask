@@ -35,7 +35,8 @@ mask_dur = {'strong':12,'weak': 12 - float(exp_input[3]) + 1,'catch':15}     # t
 response_dur = 78              # time the response period stays on the screen
 fixation_dur = 12			# fixation before stimulus_strength
 blank_dur_pre = 3
-pause_dur = 600
+pause_dur = [240, 300, 360];
+random.shuffle(pause_dur)
 #strength_prob = [.5,.5]   # probability of the trial being strong or weak
 stim_size = .06             #size of the stimulus on screen
 mask_size_ratio = 1.6         #how much proptionally bigger is mask
@@ -378,7 +379,7 @@ if scanner:
 experiment_clock.reset()
 
 # Create a list of blocks and shuffle them
-block_list = [1,2,3]
+block_list = [1,2,3,4]
 random.shuffle(block_list)
 
 # Iterate over three shorter blocks of the nogo task with 20 seconds pause inbetween
@@ -494,7 +495,7 @@ for b in range(len(block_list)):
 						else:
 							correct = 0
 						if go_type == 'catch':
-							correct = 'NA'
+							correct = 1
 						output_file.write(','.join([str(subid),str(run),str(trial+1),str(go_type),str(side),str(sub_response),str(correct),strength,str(response_time),str(cumulative_response_time),str(fixation_onset/60),str(fixation_dur/60),str(stim_onset/60),str(stim_dur[strength]/60),str(blank_onset/60),str(blank_dur[strength]/60),str(mask_onset/60),str(mask_dur[strength]/60),str(response_onset/60),str(response_dur/60),go_side,stimulus_strength,str(presentation_duration)+'\n']))
 						output_file.flush()
 
@@ -502,7 +503,7 @@ for b in range(len(block_list)):
 				if go_type == 'nogo':
 					correct = 1
 				elif go_type == 'catch':
-					correct = 'NA'
+					correct = 0
 				else:
 					correct = 0
 				output_file.write(','.join([str(subid),str(run),str(trial+1),str(go_type),str(side),'NA',str(correct),strength,'NA','NA',str(fixation_onset/60),str(fixation_dur/60),str(stim_onset/60),str(stim_dur[strength]/60),str(blank_onset/60),str(blank_dur[strength]/60),str(mask_onset/60),str(mask_dur[strength]/60),str(response_onset/60),str(response_dur/60),str(go_side),str(stimulus_strength),str(presentation_duration)+'\n']))
@@ -511,8 +512,8 @@ for b in range(len(block_list)):
 			last_trial_dur = fixation_dur + blank_dur_pre + stim_dur[strength] + blank_dur[strength] + mask_dur[strength] + response_dur
 			#port.setData(0)
 	pause_text = visual.TextStim(win, text='Pause', height = .065, color = 'white', alignHoriz = 'center', alignVert = 'center', pos=(0.0,0.0))
-	if not b == 2:
-		for p in range(int(pause_dur)):
+	if not b == 3:
+		for p in range(int(pause_dur[b])):
 			pause_text.draw()
 			win.flip()
-		elapse_time += pause_dur
+		elapse_time += pause_dur[b]
