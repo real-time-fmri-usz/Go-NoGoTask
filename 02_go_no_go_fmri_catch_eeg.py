@@ -18,7 +18,7 @@ dlg.addField('Subject ID:')
 dlg.addField('Run', )
 dlg.addField('Scanner', choices = ['yes','no'])
 dlg.addField('Stimulus Threshold (in Frames):')
-dlg.addField('Go Side', choices = ['right'])
+dlg.addField('Go Side', choices = ['left','right'])
 dlg.addField('Practice', choices = ['yes','no'])
 dlg.addField('Language', choices = ['en', 'de'])
 
@@ -67,10 +67,16 @@ else:
 	scanner = False
 stimulus_strength = exp_input[3]
 go_side = exp_input[4]
+print(go_side)
 if go_side == 'left':
+	go_side_de = 'linke'
 	nogo_side = 'right'
+	nogo_side_de = 'rechte'
 else:
 	nogo_side = 'left'
+	nogo_side_de = 'linke'
+	go_side_de = 'rechte'
+
 if exp_input[5] == 'yes':
 	show_practice = True
 else:
@@ -147,7 +153,7 @@ frame_example = visual.ImageStim(
 if language == 'en':
 
 	#instructions_en
-	instructions_text1 = visual.TextStim(win, text='Press the right button as fast as possible when you see this frame.',
+	instructions_text1 = visual.TextStim(win, text='Press the "%s" button as fast as possible when you see this frame.'%go_side,
 										font = 'Arial',
 										height = fontsize,
 										color = 'white',
@@ -155,7 +161,7 @@ if language == 'en':
 										alignVert = 'center',
 										pos=(0.0,0.3))
 
-	instructions_text2 = visual.TextStim(win, text='If the frame is preceded by a diamond with a missing edge on its right side, press the right button!',
+	instructions_text2 = visual.TextStim(win, text='If the frame is preceded by a diamond with a missing edge on its %s side, press the %s button!'%(go_side,go_side),
 										font = 'Arial',
 										height = fontsize,
 										color = 'white',
@@ -163,7 +169,7 @@ if language == 'en':
 										alignVert = 'center',
 										pos=(0.0,0.3))
 
-	instructions_text3 = visual.TextStim(win, text='However, do not press any button if the frame is preceded by a diamond with a missing edge on its left side!',
+	instructions_text3 = visual.TextStim(win, text='However, do not press any button if the frame is preceded by a diamond with a missing edge on its %s side!'%nogo_side,
 										font = 'Arial',
 										height = fontsize,
 										color = 'white',
@@ -220,9 +226,11 @@ if language == 'en':
 										alignVert = 'center',
 										pos=(0.0,stim_size+.2))
 
-else:
+elif language == 'de':
 	#instructions_de
-	instructions_text1 = visual.TextStim(win, text='Drücke die rechte Taste so schnell wie möglich, wenn du diesen Rahmen siehst.',
+
+
+	instructions_text1 = visual.TextStim(win, text='Drücke die %s Taste so schnell wie möglich, wenn du diesen Rahmen siehst.'%go_side_de,
 										font = 'Arial',
 										height = fontsize,
 										color = 'white',
@@ -230,7 +238,7 @@ else:
 										alignVert = 'center',
 										pos=(0.0,0.3))
 
-	instructions_text2 = visual.TextStim(win, text='Drücke die rechte Taste, wenn dem Rahmen ein Diamant vorangeht, dem die rechte Seite fehlt!',
+	instructions_text2 = visual.TextStim(win, text='Drücke die %s Taste, wenn dem Rahmen ein Diamant vorangeht, dem die %s Seite fehlt!'%(go_side_de,go_side_de),
 										font = 'Arial',
 										height = fontsize,
 										color = 'white',
@@ -238,7 +246,7 @@ else:
 										alignVert = 'center',
 										pos=(0.0,0.3))
 
-	instructions_text3 = visual.TextStim(win, text='Aber, drücke keine Taste, wenn dem Rahmen ein Diamant vorangeht, dem die linke Seite fehlt!',
+	instructions_text3 = visual.TextStim(win, text='Aber, drücke keine Taste, wenn dem Rahmen ein Diamant vorangeht, dem die %s Seite fehlt!'%nogo_side_de,
 										font = 'Arial',
 										height = fontsize,
 										color = 'white',
@@ -339,7 +347,10 @@ if show_practice:
 	#show missing corner shapes
 	instructions_header.draw()
 	instructions_text2.draw()
-	right_example.draw()
+	if go_side == 'right':
+		right_example.draw()
+	else:
+		left_example.draw()
 	frame_example.draw()
 	win.flip()
 	event.waitKeys(keyList='space')
@@ -347,7 +358,10 @@ if show_practice:
 	#show frame shape
 	instructions_header.draw()
 	instructions_text3.draw()
-	left_example.draw()
+	if go_side == 'right':
+		left_example.draw()
+	else:
+		right_example.draw()
 	frame_example.draw()
 	win.flip()
 	event.waitKeys(keyList='space')
@@ -425,6 +439,7 @@ for b in range(len(block_list)):
 				side = 'left'
 			else:
 				side = 'right'
+
 			if go_type == 'catch':
 				side = 'NA'
 			elapse_time += last_trial_dur
