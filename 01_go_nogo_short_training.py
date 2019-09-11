@@ -116,7 +116,7 @@ noise = visual.GratingStim(win, tex=noiseTexture, mask=None, size=(stim_width*2,
 #Fixation
 fixation = visual.ShapeStim(
 				win=win, name='polygon', vertices='cross',
-			    size=(stim_width, stim_height),
+			    size=(stim_width/1.5, stim_height/1.5),
 			    ori=0, pos=(0, 0),
 			    fillColor=[1,1,1], fillColorSpace='rgb',
 				lineColor = [-1,-1,-1],
