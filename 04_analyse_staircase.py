@@ -39,8 +39,8 @@ data['shifted_direction'] = data['currentDirection'].shift(-1)
 data['reversalPoint'] = data.shifted_direction.eq(data.shifted_direction.shift())
 new_data = data.drop([data.index[0],data.index[-1]])
 threshold = round(new_data[new_data['reversalPoint'] == False]['stim_dur'].mean(),4)
-print(threshold)
-
+print("Threshold in seconds: " + threshold)
+print("Threshold in Frames: " +  round(threshold / 0.01666666666,0))
 #Plot1
 
 

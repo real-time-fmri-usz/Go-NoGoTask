@@ -15,12 +15,13 @@ import pandas as pd
 #Experimenter input
 dlg = gui.Dlg(title = 'Experiment Parameters')
 dlg.addField('Subject ID:')
-dlg.addField('Run', )
+dlg.addField('Run:')
 dlg.addField('Scanner', choices = ['yes','no'])
 dlg.addField('Stimulus Threshold (in Frames):')
 dlg.addField('Go Side', choices = ['left','right'])
 dlg.addField('Practice', choices = ['yes','no'])
 dlg.addField('Language', choices = ['en', 'de'])
+dlg.addField('Session:')
 
 exp_input = dlg.show()
 
@@ -67,7 +68,7 @@ else:
 	scanner = False
 stimulus_strength = exp_input[3]
 go_side = exp_input[4]
-print(go_side)
+
 if go_side == 'left':
 	go_side_de = 'linke'
 	nogo_side = 'right'
@@ -83,6 +84,8 @@ else:
 	show_practice = False
 
 language = exp_input[6]
+session = exp_input[7]
+
 
 
 ### Visuals ###
@@ -227,7 +230,6 @@ if language == 'en':
 										pos=(0.0,stim_size+.2))
 
 elif language == 'de':
-	#instructions_de
 
 
 	instructions_text1 = visual.TextStim(win, text='Drücke die %s Taste so schnell wie möglich, wenn du diesen Rahmen siehst.'%go_side_de,
@@ -318,9 +320,9 @@ experiment_clock = core.Clock()
 
 ### Results Logging ###
 time_stamp = strftime('%d-%m-%Y_%H:%M:%S').replace(':','_')
-output_file_path = 'results/%s_%s_%s_%s_%s.csv'%(subid,run,stimulus_strength,go_side,time_stamp)
+output_file_path = 'results/%s_%s_%s_%s_%s_%s.csv'%(subid,run,stimulus_strength,go_side,time_stamp,session)
 output_file = open(output_file_path,'w+')
-output_file.write('subid,run,trial,trial_type,side,response,correct,strength,response_time,cumulative_response_time,fixation_onset,fixation_dur,stim_onset,stim_dur,blank_onset,blank_dur,mask_onset,mask_dur,response_onset,response_dur,go_side,Staircase_stimulus,Presentation Duration\n')
+output_file.write('subid,session,run,trial,trial_type,side,response,correct,strength,response_time,cumulative_response_time,fixation_onset,fixation_dur,stim_onset,stim_dur,blank_onset,blank_dur,mask_onset,mask_dur,response_onset,response_dur,go_side,Staircase_stimulus,Presentation Duration\n')
 output_file.flush()
 
 
@@ -377,6 +379,7 @@ if show_practice:
 	win.flip()
 	event.waitKeys(keyList='space')
 
+print(go_side)
 
 ### Main Experiment ###
 
@@ -405,16 +408,16 @@ for b in range(len(block_list)):
     header = None,
     names = ['totalDur', 'trialType', 'duration', 'weirdFactor', 'trialName'])
 	trial_list_block = trial_list_block.replace(np.nan,'Null')
-
+	go_type = ''
+	strength = ''
 	last_trial_dur = 0
 	for trial in range(len(trial_list_block)):
 		if trial_list_block['trialName'][trial] == 'Null':
 			elapse_time += last_trial_dur
 			trial_duration = int(trial_list_block['duration'][trial] * 60)
 			for frames in range(trial_duration):
-
 				win.flip()
-			output_file.write(','.join([str(subid),str(run),str(trial+1),'Rest','Rest','Rest','Rest','Rest','Rest','Rest',str(elapse_time/60),str(trial_list_block['duration'][trial]),'Rest','Rest','Rest','Rest','Rest','Rest','Rest','Rest','Rest','Rest',str(trial_list_block['duration'][trial])+'\n']))
+			output_file.write(','.join([str(subid),str(session),str(run),str(trial+1),'Rest','Rest','Rest','Rest','Rest','Rest','Rest',str(elapse_time/60),str(trial_list_block['duration'][trial]),'Rest','Rest','Rest','Rest','Rest','Rest','Rest','Rest','Rest','Rest',str(trial_list_block['duration'][trial])+'\n']))
 			output_file.flush()
 			last_trial_dur = trial_duration
 
@@ -511,7 +514,7 @@ for b in range(len(block_list)):
 							correct = 0
 						if go_type == 'catch':
 							correct = 1
-						output_file.write(','.join([str(subid),str(run),str(trial+1),str(go_type),str(side),str(sub_response),str(correct),strength,str(response_time),str(cumulative_response_time),str(fixation_onset/60),str(fixation_dur/60),str(stim_onset/60),str(stim_dur[strength]/60),str(blank_onset/60),str(blank_dur[strength]/60),str(mask_onset/60),str(mask_dur[strength]/60),str(response_onset/60),str(response_dur/60),go_side,stimulus_strength,str(presentation_duration)+'\n']))
+						output_file.write(','.join([str(subid),str(session), str(run),str(trial+1),str(go_type),str(side),str(sub_response),str(correct),strength,str(response_time),str(cumulative_response_time),str(fixation_onset/60),str(fixation_dur/60),str(stim_onset/60),str(stim_dur[strength]/60),str(blank_onset/60),str(blank_dur[strength]/60),str(mask_onset/60),str(mask_dur[strength]/60),str(response_onset/60),str(response_dur/60),go_side,stimulus_strength,str(presentation_duration)+'\n']))
 						output_file.flush()
 
 			if not responded:
@@ -521,7 +524,7 @@ for b in range(len(block_list)):
 					correct = 0
 				else:
 					correct = 0
-				output_file.write(','.join([str(subid),str(run),str(trial+1),str(go_type),str(side),'NA',str(correct),strength,'NA','NA',str(fixation_onset/60),str(fixation_dur/60),str(stim_onset/60),str(stim_dur[strength]/60),str(blank_onset/60),str(blank_dur[strength]/60),str(mask_onset/60),str(mask_dur[strength]/60),str(response_onset/60),str(response_dur/60),str(go_side),str(stimulus_strength),str(presentation_duration)+'\n']))
+				output_file.write(','.join([str(subid),str(session), str(run),str(trial+1),str(go_type),str(side),'NA',str(correct),strength,'NA','NA',str(fixation_onset/60),str(fixation_dur/60),str(stim_onset/60),str(stim_dur[strength]/60),str(blank_onset/60),str(blank_dur[strength]/60),str(mask_onset/60),str(mask_dur[strength]/60),str(response_onset/60),str(response_dur/60),str(go_side),str(stimulus_strength),str(presentation_duration)+'\n']))
 				output_file.flush()
 
 			last_trial_dur = fixation_dur + blank_dur_pre + stim_dur[strength] + blank_dur[strength] + mask_dur[strength] + response_dur

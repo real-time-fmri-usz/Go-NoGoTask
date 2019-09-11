@@ -81,7 +81,7 @@ else:
 
 
 #window
-win = visual.Window(size=[800, 600], color=[-1,-1,-1], screen = 0, fullscr = False)
+win = visual.Window(size=[800, 600], color=[-1,-1,-1], screen = 1, fullscr = True)
 win.setMouseVisible(False)
 aspect = float(win.size[1])/float(win.size[0])
 print(aspect)
