@@ -1,0 +1,12 @@
+2.5108 	ERROR 	avbin.dll failed to load. Try importing psychopy.visual
+  as the first library (before anything that uses scipy)
+  and make sure that avbin is installed.
+7.0772 	WARNING 	User requested fullscreen with size [1536  864], but screen is actually [1920, 1080]. Using actual size
+9.1186 	EXP 	Created window1 = Window(allowGUI=False, allowStencil=False, autoLog=True, bitsMode=UNKNOWN, blendMode='avg', color=array([ 0.,  0.,  0.]), colorSpace='rgb', fullscr=UNKNOWN, gamma=None, lms=UNKNOWN, monitor=<psychopy.monitors.calibTools.Monitor object at 0x1F73E810>, multiSample=False, name='window1', numSamples=2, pos=[0, 0], screen=0, size=array([1920, 1080]), stereo=False, units=u'norm', useFBO=True, useRetina=False, viewOri=0.0, viewPos=None, viewScale=None, waitBlanking=True, winType='pyglet')
+9.1187 	EXP 	window1: recordFrameIntervals = False
+9.3250 	EXP 	window1: recordFrameIntervals = True
+9.5546 	EXP 	window1: recordFrameIntervals = False
+9.5888 	EXP 	Created grating = GratingStim(autoDraw=False, autoLog=True, color=array([ 1.,  1.,  1.]), colorSpace='rgb', contrast=1.0, depth=0.0, interpolate=True, mask=None, maskParams=None, name='grating', opacity=1.0, ori=0.0, phase=array([ 0.,  0.]), pos=array([ 0.,  0.]), rgbPedestal=array([ 0.,  0.,  0.]), sf=array([ 1.,  1.]), size=array([ 0.5,  0.5]), tex=u'sin', texRes=128, units=u'norm', win=Window(...))
+9.7102 	EXP 	grating: autoDraw = True
+12.4910 	DATA 	Keypress: q
+13.8053 	DATA 	Keypress: escape
