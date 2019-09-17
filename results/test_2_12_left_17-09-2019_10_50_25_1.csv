@@ -1,0 +1,4 @@
+subid,session,run,trial,trial_type,side,response,correct,strength,response_time,cumulative_response_time,fixation_onset,fixation_dur,stim_onset,stim_dur,blank_onset,blank_dur,mask_onset,mask_dur,response_onset,response_dur,go_side,Staircase_stimulus,Presentation Duration
+test,1,2,10,Rest,Rest,Rest,Rest,Rest,Rest,Rest,0.0,2.0,Rest,Rest,Rest,Rest,Rest,Rest,Rest,Rest,Rest,Rest,2.0
+test,1,2,16,Rest,Rest,Rest,Rest,Rest,Rest,Rest,2.0,8.0,Rest,Rest,Rest,Rest,Rest,Rest,Rest,Rest,Rest,Rest,8.0
+test,1,2,18,Rest,Rest,Rest,Rest,Rest,Rest,Rest,10.0,2.0,Rest,Rest,Rest,Rest,Rest,Rest,Rest,Rest,Rest,Rest,2.0
