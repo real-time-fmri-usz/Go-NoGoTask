@@ -33,7 +33,10 @@ exp_input = dlg.show()
 stim_dur = {'strong':1,'weak':float(exp_input[3]),'catch':0}     # time in seconds that the subliminal stim appears on the screen [strong,weak,catch]
 blank_dur = {'strong':2,'weak':2,'catch':0}        # time a blank screen between stim and mask is on screen [strong,weak,catch]
 mask_dur = {'strong':12,'weak': 12 - float(exp_input[3]) + 1,'catch':15}     # time the mask appears on the screen [strong,weak,catch]
-response_dur = 90              # time the response period stays on the screen
+#response_dur = 90              # time the response period stays on the screen
+responses = [78,80,82,84,86,88,92,94,96,98,100,102]
+response_dur_list = responses * 12
+random.shuffle(response_dur_list)
 fixation_dur = 12			# fixation before stimulus_strength
 blank_dur_pre = 3
 pause_dur = [258, 312, 340];
@@ -52,6 +55,8 @@ practice_iti_dur = 2
 practice_stim_dur = .3
 practice_blank_dur = .033
 practice_mask_dur = .3
+
+
 
 #which run
 run = exp_input[1]
@@ -413,7 +418,12 @@ last_trial_dur = 0
 trial_counter = 0
 
 for trial in range(len(trial_list)):
+
 		if trial_list['trialName'][trial] == 'weakGo' or trial_list['trialName'][trial] == 'strongGo' or trial_list['trialName'][trial] == 'weakNoGo' or trial_list['trialName'][trial] == 'strongNoGo' or trial_list['trialName'][trial] == 'catch':
+			response_dur = response_dur_list[0]
+			print(len(response_dur_list))
+			response_dur_list.pop(0)
+			print(len(response_dur_list))
 			trial_counter += 1
 
 
@@ -428,7 +438,7 @@ for trial in range(len(trial_list)):
 			last_trial_dur = trial_duration
 
 		else:
-			
+
 			if trial_counter == 36 or trial_counter == 72 or trial_counter == 108:
 				for p in range(int(pause_dur[0])):
 					pause_text.draw()
@@ -511,6 +521,7 @@ for trial in range(len(trial_list)):
 					mask.draw()
 					black_diamond.draw()
 				win.flip()
+
 			#response collection
 			if not responded:
 				response = event.getKeys(keyList=reskeys_list, timeStamped=True)
