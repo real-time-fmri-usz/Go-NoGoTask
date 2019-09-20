@@ -1,0 +1,202 @@
+---
+title: "Pilot data fMRI - 15. 09. "
+author: "Gianluca Macauda"
+date: "15 9 2019"
+output:
+  html_document:
+    fig_caption: yes
+    fig_height: 5
+    fig_width: 8
+    fig_align: 'center'
+    theme: journal
+    toc: yes
+    toc_float: yes
+---
+
+
+```{r setup, echo = FALSE, message = FALSE, warning = FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE,
+  fig.align = 'center'
+  #fig.path = 'plots/',
+  #dev = c('png','svg','pdf'),
+  #dpi = 500
+)
+```
+
+## Load the data for both tasks 
+
+Read all data files from the task folder and clean the data 
+
+```{r readData, results= 'hide'}
+
+library(tidyverse)
+
+all_data <- map_df(list.files(path = 'task', full.names = T), read_csv, col_types = cols()) %>% 
+  filter(Staircase_stimulus != 'Rest') %>% 
+  mutate(correct = as.numeric(correct),
+         correct = case_when(trial_type == 'catch' & response == 'right' ~ 1,
+                             correct == 1 ~ 1,
+                             correct == 0 ~ 0),
+         correct = replace_na(correct, 0)) %>% 
+  mutate(frame = case_when(Staircase_stimulus == "12" ~ 'easy',
+                           Staircase_stimulus != "12" ~ 'difficult'),
+         response_time = as.numeric(response_time))
+
+head(all_data)
+
+```
+
+## Accuracy Plots
+
+First, we plot the accuracy for each participant and condition. We also divide between the van gaal version (easy) and the staircase version (difficult)
+
+```{r accuracy plot}
+
+all_data %>% 
+  group_by(subid, frame, trial_type, strength) %>% 
+  summarise(meanAccuracy = mean(correct)) %>% 
+  ggplot(aes(x = trial_type, y = meanAccuracy, group = strength, color = strength, fill = strength)) +
+  geom_point() +
+  geom_line() +
+  geom_hline(yintercept = 0.5, color = 'red', size = 1) + 
+  facet_grid(frame ~ subid) +
+  ggtitle('Mean Accuracy for all participants and frames')
+
+```
+
+## Response Times
+
+Next, we have a look at the response times. First for the van Gaal version.
+
+```{r rtvanGaal}
+all_data %>% 
+  filter(frame == 'easy',
+         trial_type != 'catch') %>% 
+  ggplot(aes(x = response_time, group = trial_type, color = trial_type, fill = trial_type)) +
+  geom_histogram(position = 'dodge', alpha = 0.3, bins = 100) + 
+  theme_bw() + 
+  facet_grid(strength~subid) +
+  ggtitle('Response Time in van Gaal Version Version')
+```
+
+And for the Staircase Version: 
+
+```{r rtStaircase}
+all_data %>% 
+  filter(frame == 'difficult',
+         trial_type != 'catch') %>% 
+  ggplot(aes(x = response_time, group = trial_type, color = trial_type, fill = trial_type)) +
+  geom_histogram(position = 'dodge', alpha = 0.3, bins = 100) + 
+  theme_bw() + 
+  facet_grid(strength~subid) +
+  ggtitle('Response Time in Staircase  Version')
+```
+
+
+## shifted lognormal for response times in strongly masked conditions
+
+Next, we try to fit shifted lognormal for the response times in the strongly masked condition. The staircase and van Gaal version are mixed together. Participants are modeled as random effect. The shift (non decision time) is influenced by the participants, so that different participants can have different shifts of the lognormal distribution. However, it shows a slightly slower response time for the nogo trials in the strongly masked condition. This is what van Gaal found!
+
+```{r response time model} 
+library(brms)
+
+rtDataStrongMask <- all_data %>% 
+  filter(strength == 'strong')
+
+prior = c(
+  set_prior('normal(-1, 0.5)', class = 'Intercept'),  # around exp(-1) = 0.36 secs
+  set_prior('normal(0.4, 0.3)', class = 'sigma'),  # SD of individual rts in log-units
+  set_prior('normal(0, 0.3)', class = 'b')
+)
+
+stancode_shifted_log <- make_stancode(formula = bf(response_time ~ trial_type + (trial_type|subid),
+                          ndt ~ subid), 
+          data = rtDataStrongMask, 
+          family = shifted_lognormal(link_ndt = 'log'),
+          control = list(max_treedepth = 15,
+                        adapt_delta = 0.95),
+          init_r = 0.05,
+          #file = 'fit_rt_1',
+          prior = prior)
+
+
+
+initfun <- function() {
+  list(Intercept_ndt = -4)
+}
+
+fit_rt = brm(formula = bf(response_time ~ trial_type + (trial_type|subid),
+                          ndt ~ subid), 
+          data = rtDataStrongMask, 
+          family = shifted_lognormal(link_ndt = 'log'),
+          control = list(max_treedepth = 15,
+                        adapt_delta = 0.95),
+          inits = initfun,
+          init_r = 0.05,
+          file = 'fit_rt_ndt_subid',
+          prior = prior,
+          cores = 4
+          )  # Save all that h
+
+
+(marginalEffectsRt <- marginal_effects(fit_rt))
+
+fit_rt
+
+```
+
+## D-Prime 
+
+Some signal detection models. 
+
+```{r signal_detection}
+
+sdt_data <- all_data %>% 
+  filter(strength == 'weak') %>% 
+  mutate(type = case_when(correct == 1 & trial_type == 'nogo' ~ 'cr',
+                          correct == 1 & trial_type == 'go' ~ 'hit',
+                          correct == 0 & trial_type == 'nogo' ~ 'fa',
+                          correct == 0 & trial_type == 'go' ~ 'miss')) %>% 
+  select(subid, run, trial_type, correct, type, frame)
+
+sdt_summ <- sdt_data %>% 
+  group_by(subid, type) %>% 
+  summarise(count = n()) %>% 
+  spread(type, count) %>% 
+  mutate(miss = ifelse(is.na(miss),0,miss))
+
+
+sdt_data <- all_data %>% 
+  filter(strength == 'weak') %>% 
+  mutate(type = case_when(trial_type == 'nogo' ~ 0,
+                          trial_type == 'go' ~ 1),
+         response_coded = case_when(trial_type == 'go' & correct == 1 ~ 1,
+                                    trial_type == 'nogo' & correct == 1 ~ 0,
+                                    trial_type == 'go' & correct == 0 ~ 0,
+                                    trial_type == 'nogo' & correct == 0 ~ 1),
+         trial_type = relevel(as.factor(trial_type), ref = 'nogo')) %>% 
+  select(subid, run, trial_type, correct, type, response_coded, frame)
+  
+
+glmmfit <- brm(response_coded ~ type + (type | subid),
+              family = bernoulli(link = 'probit'),
+              control = list(max_treedepth = 15,
+                        adapt_delta = 0.95),
+              data = sdt_data,
+              file = 'glmmfit',
+              cores = 4)
+
+glmmfit_frame <- brm(response_coded ~ type*frame + (type*frame | subid),
+                    family = bernoulli(link = 'probit'),
+                    control = list(max_treedepth = 15,
+                                   adapt_delta = 0.95),
+                    data = sdt_data,
+                    file = 'glmmfit_frame',
+                    cores = 4)
+
+summary(glmmfit)
+stanplot(glmmfit, pars = '^r_')
+```

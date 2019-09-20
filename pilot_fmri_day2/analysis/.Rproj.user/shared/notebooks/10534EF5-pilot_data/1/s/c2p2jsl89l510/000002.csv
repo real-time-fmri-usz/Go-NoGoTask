@@ -1,0 +1,61 @@
+"0","library(brms)"
+"2","Lade nötiges Paket: Rcpp
+"
+"2","Registered S3 methods overwritten by 'htmltools':
+  method               from         
+  print.html           tools:rstudio
+  print.shiny.tag      tools:rstudio
+  print.shiny.tag.list tools:rstudio
+"
+"2","Registered S3 method overwritten by 'htmlwidgets':
+  method           from         
+  print.htmlwidget tools:rstudio
+"
+"2","Registered S3 method overwritten by 'xts':
+  method     from
+  as.zoo.xts zoo 
+"
+"2","Loading 'brms' package (version 2.10.0). Useful instructions
+can be found by typing help('brms'). A more detailed introduction
+to the package is available through vignette('brms_overview').
+"
+"0","rtDataStrongMask <- all_data %>% "
+"0","  filter(strength == 'strong')"
+"0",""
+"0","prior = c("
+"0","  set_prior('normal(-1, 0.5)', class = 'Intercept'),  # around exp(-1) = 0.36 secs"
+"0","  set_prior('normal(0.4, 0.3)', class = 'sigma'),  # SD of individual rts in log-units"
+"0","  set_prior('normal(0, 0.3)', class = 'b')"
+"0",")"
+"0",""
+"0","stancode_shifted_log <- make_stancode(formula = bf(response_time ~ trial_type + (trial_type|subid),"
+"0","                          ndt ~ subid), "
+"0","          data = rtDataStrongMask, "
+"0","          family = shifted_lognormal(link_ndt = 'log'),"
+"0","          control = list(max_treedepth = 15,"
+"0","                        adapt_delta = 0.95),"
+"0","          init_r = 0.05,"
+"0","          #file = 'fit_rt_1',"
+"0","          prior = prior)"
+"2","Rows containing NAs were excluded from the model."
+"2","Rows containing NAs were excluded from the model."
+"0","initfun <- function() {"
+"0","  list(Intercept_ndt = -4)"
+"0","}"
+"0",""
+"0","fit_rt = brm(formula = bf(response_time ~ trial_type + (trial_type|subid),"
+"0","                          ndt ~ subid), "
+"0","          data = rtDataStrongMask, "
+"0","          family = shifted_lognormal(link_ndt = 'log'),"
+"0","          control = list(max_treedepth = 15,"
+"0","                        adapt_delta = 0.95),"
+"0","          inits = initfun,"
+"0","          init_r = 0.05,"
+"0","          file = 'fit_rt_ndt_subid',"
+"0","          prior = prior,"
+"0","          cores = 4"
+"0","          )  # Save all that h"
+"0",""
+"0",""
+"0","(marginalEffectsRt <- marginal_effects(fit_rt))"
+"0",""
