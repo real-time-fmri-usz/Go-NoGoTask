@@ -1,8 +1,0 @@
-"0","all_data %>% "
-"0","  filter(frame == 'difficult',"
-"0","         trial_type != 'catch') %>% "
-"0","  ggplot(aes(x = response_time, group = trial_type, color = trial_type, fill = trial_type)) +"
-"0","  geom_histogram(position = 'dodge', alpha = 0.3, bins = 100) + "
-"0","  theme_bw() + "
-"0","  facet_grid(strength~subid) +"
-"0","  ggtitle('Response Time in Staircase  Version')"

@@ -1,6 +1,0 @@
-subid,trial,trial_type,stim_side,response,response_time,cumulative_response_time,iti_onset
-test,1,left,left,right,0.459,1.764,0.0
-test,2,left,left,right,0.293,4.786,2.75
-test,3,right,right,NA,NA,NA,5.5
-test,4,right,right,right,0.731,10.349,7.75
-test,5,left,left,right,0.292,13.099,10.0
