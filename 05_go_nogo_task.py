@@ -33,8 +33,8 @@ exp_input = dlg.show()
 stim_dur = {'strong':1,'weak':float(exp_input[3]),'catch':0}     # time in seconds that the subliminal stim appears on the screen [strong,weak,catch]
 blank_dur = {'strong':2,'weak':2,'catch':0}        # time a blank screen between stim and mask is on screen [strong,weak,catch]
 mask_dur = {'strong':12,'weak': 12 - float(exp_input[3]) + 1,'catch':15}     # time the mask appears on the screen [strong,weak,catch]
-responses = [78,80,82,84,86,88,92,94,96,98,100,102]
-response_dur_list = responses * 12
+responses = [90,92,94,96,98,100]
+response_dur_list = responses * 24
 random.shuffle(response_dur_list)            # time the response period stays on the screen
 fixation_dur = 12			# fixation before stimulus_strength
 blank_dur_pre = 3

@@ -5,16 +5,16 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "0",
+    "hash" : "2726078490",
     "id" : "718EAA74",
-    "lastKnownWriteTime" : 1568821327,
-    "last_content_update" : 1568821327817,
+    "lastKnownWriteTime" : 1569316376,
+    "last_content_update" : 1569316385512,
     "path" : "~/projects/02_work_stuff/04_tasks/02_nogo/pilot_fmri_day2/analysis/pilot_data.Rmd",
     "project_path" : "pilot_data.Rmd",
     "properties" : {
-        "cursorPosition" : "200,31",
-        "last_setup_crc32" : "406C881Fbb338d19",
-        "scrollLine" : "187"
+        "cursorPosition" : "278,0",
+        "last_setup_crc32" : "E4E3C71C6432c9ae",
+        "scrollLine" : "250"
     },
     "read_only" : false,
     "read_only_alternatives" : [

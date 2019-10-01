@@ -102,6 +102,7 @@ Next, we try to fit shifted lognormal for the response times in the strongly mas
 
 ```{r response time model} 
 library(brms)
+library(tidybayes)
 
 rtDataStrongMask <- all_data %>% 
   filter(strength == 'strong')
@@ -153,8 +154,8 @@ fit_rt
 Some signal detection models. 
 
 ```{r signal_detection}
-
-sdt_data <- all_data %>% 
+library(viridis)
+sdt_data2 <- all_data %>% 
   filter(strength == 'weak') %>% 
   mutate(type = case_when(correct == 1 & trial_type == 'nogo' ~ 'cr',
                           correct == 1 & trial_type == 'go' ~ 'hit',
@@ -162,11 +163,25 @@ sdt_data <- all_data %>%
                           correct == 0 & trial_type == 'go' ~ 'miss')) %>% 
   select(subid, run, trial_type, correct, type, frame)
 
-sdt_summ <- sdt_data %>% 
+sdt_summ <- sdt_data2 %>% 
   group_by(subid, type) %>% 
   summarise(count = n()) %>% 
   spread(type, count) %>% 
   mutate(miss = ifelse(is.na(miss),0,miss))
+
+##Point estimates for the SDT models
+
+sdt_summ_pe <- sdt_summ %>% 
+  mutate(zhr = qnorm(hit / (hit+miss)),
+         zfa = qnorm(fa / (fa+cr)),
+         dprime = zhr - zfa, 
+         crit = -zfa)
+
+sdt_summ_pe_group <- sdt_summ_pe %>% 
+  select(subid, dprime, crit) %>% 
+  gather(parameter, value, -subid) %>% 
+  group_by(parameter) %>% 
+  summarise(n = n(), mu = mean(value), sd = sd(value), se = sd/sqrt(n))
 
 
 sdt_data <- all_data %>% 
@@ -189,6 +204,15 @@ glmmfit <- brm(response_coded ~ type + (type | subid),
               file = 'glmmfit',
               cores = 4)
 
+glmmfit_p09 <- brm(response_coded ~ type,
+              family = bernoulli(link = 'probit'),
+              control = list(max_treedepth = 15,
+                        adapt_delta = 0.95),
+              data = sdt_data %>% filter(subid == 'p09'),
+              file = 'glmmfit_p09',
+              cores = 4)
+
+
 glmmfit_frame <- brm(response_coded ~ type*frame + (type*frame | subid),
                     family = bernoulli(link = 'probit'),
                     control = list(max_treedepth = 15,
@@ -197,6 +221,59 @@ glmmfit_frame <- brm(response_coded ~ type*frame + (type*frame | subid),
                     file = 'glmmfit_frame',
                     cores = 4)
 
-summary(glmmfit)
-stanplot(glmmfit, pars = '^r_')
+sdt_summ_pe %>% 
+  ggplot(aes(x=crit, y = dprime)) +
+  geom_point() + 
+  geom_text(aes(label=subid, hjust = -0.2, vjust = -0.2)) +
+  theme_bw() + 
+  xlab('Criterion') + 
+  ylab('D-Prime') + 
+  ggtitle('Point estimates for the individual participants')
+
+
+glmmfit %>% 
+  spread_draws(b_Intercept, r_subid[id,type]) %>% 
+  filter(type == "Intercept") %>% 
+  median_qi(criterion = -(b_Intercept + r_subid), .width = c(.95, .66)) %>% 
+  ggplot(aes(y = id, x = criterion, xmin = .lower, xmax = .upper )) +
+  geom_pointintervalh(width = c(.66, .95)) +  
+  ylab('Participants') + 
+  theme_light() + 
+  ggtitle('Individual Criterions')
+
+glmmfit %>% 
+  spread_draws(b_type, r_subid[id,type]) %>% 
+  filter(type == "type") %>% 
+  median_qi(d.prime = (b_type + r_subid), .width = c(.95, .66)) %>% 
+  ggplot(aes(y = id, x = d.prime, xmin = .lower, xmax = .upper )) +
+  geom_pointintervalh() + 
+  ylab('Participants') + 
+  theme_light() + 
+  ggtitle('Individual D-Primes')
+```
+
+Last, a summary of Point estimates of the criterion and d-prime and the posterior density from the hierarchical model. 
+
+```{r dprimestuff}
+
+glmmfit %>% 
+  spread_draws(b_Intercept, b_type, r_subid[subid,type]) %>% 
+  filter(subid != 'p05') %>% 
+  spread(key = type, value = r_subid) %>% 
+  mutate(criterion = b_Intercept + Intercept,
+         dprime = b_type + type) %>% 
+  ggplot(aes(x = -criterion, y = dprime)) +
+  stat_density_2d(aes(fill = ..density..), geom = "raster", contour = FALSE) +
+  scale_fill_viridis() +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  geom_point(data = sdt_summ_pe %>%  filter(subid != 'p05'), aes(x = crit, y = dprime), col = 'red', size = 2) + 
+  theme(legend.position='none') +
+  xlab('Criterion') + 
+  ylab('DPrime') + 
+  ggtitle('Posterior Density Plots for Criterion and DPrime\nPoint Estimates in red') + 
+  facet_wrap(.~subid)
+
+
+
 ```
