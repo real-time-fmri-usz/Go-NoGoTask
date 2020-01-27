@@ -139,6 +139,9 @@ for trial in range(len(trials)):
 		black_diamond.draw()
 		win.flip()
 
+	for tt in range(int(blank_dur['strong'])):
+		win.flip()
+		
 	while responded == False:
 		left_right.draw()
 		win.flip()
@@ -153,5 +156,5 @@ for trial in range(len(trials)):
 			else:
 				correct = 0
 
-				output_file.write(','.join([str(subid),str(trial+1),str(side),str(sub_response),str(correct),str(response_time)+'\n']))
-				output_file.flush()
+			output_file.write(','.join([str(subid),str(trial+1),str(side),str(sub_response),str(correct),str(response_time)+'\n']))
+			output_file.flush()
