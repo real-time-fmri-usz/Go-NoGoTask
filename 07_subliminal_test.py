@@ -43,10 +43,13 @@ pix_size = .001
 subid = exp_input[0]
 
 #window
-win = visual.Window(size=[800, 600], color=[-1,-1,-1], screen = 0, fullscr = False)
+win = visual.Window(size=[800, 600], color=[-1,-1,-1], screen = 0, fullscr = True, allowStencil=True)
 win.setMouseVisible(False)
 aspect = float(win.size[1])/float(win.size[0])
-print(aspect)
+width_ratio = float(win.size[0])/800
+height_ratio = float(win.size[1])/600
+print(width_ratio)
+print(height_ratio)
 stim_width = stim_size
 stim_height = stim_size/aspect
 fontsize = 0.055
@@ -61,7 +64,10 @@ blockers = {'left':  visual.ShapeStim(win, lineWidth=.1, lineColor='black', fill
 			'bottom':visual.ShapeStim(win, lineWidth=.1, lineColor='black', fillColor='black', vertices=((-1, -1), (1, -1), (-1,-1*stim_height+stim_height*blocker_size), (1,-1*stim_height+stim_height*blocker_size)))
 			}
 
-
+apert = visual.Aperture(win, size=1, pos=(0, 0), ori=0, nVert=120, shape=((-1*stim_width, 0), (0, stim_height), (stim_width, 0), (0,-1*stim_height)), inverted=False, units=None, name=None, autoLog=None)
+apert.enabled = False
+#maskNoise = visual.ImageStim(win, image = 'maskNoise.png', size = [stim_width*mask_size_ratio*width_ratio, stim_height*mask_size_ratio*height_ratio])
+noise = visual.ImageStim(win, image = 'testnoise.png')
 #Fixation
 fixation = visual.ShapeStim(
 				win=win, name='polygon', vertices='cross',
@@ -136,14 +142,17 @@ for trial in range(len(trials)):
 	start_response = experiment_clock.getTime()
 	for rr in range(int(mask_dur['strong'])):
 		mask.draw()
-		black_diamond.draw()
+		apert.enabled = True
+		noise.draw()
+		#black_diamond.draw()
 		win.flip()
-
+		apert.enabled = False
 	for tt in range(int(blank_dur['strong'])):
 		win.flip()
-		
+
 	while responded == False:
 		left_right.draw()
+
 		win.flip()
 		response = event.getKeys(keyList=reskeys_list, timeStamped=True)
 		if len(response) > 0:
