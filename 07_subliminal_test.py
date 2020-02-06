@@ -41,9 +41,9 @@ reskeys_list = ['b','z']
 pix_size = .001
 
 subid = exp_input[0]
-
+00
 #window
-win = visual.Window(size=[800, 600], color=[-1,-1,-1], screen = 0, fullscr = True, allowStencil=True)
+win = visual.Window(size=[800, 600], color=[-1,-1,-1], screen = 0, fullscr = False, allowStencil = True)
 win.setMouseVisible(False)
 aspect = float(win.size[1])/float(win.size[0])
 width_ratio = float(win.size[0])/800
@@ -55,7 +55,11 @@ stim_height = stim_size/aspect
 fontsize = 0.055
 wrapwidth = 80
 #Shapes
-mask = visual.ShapeStim(win, lineColor='white', fillColor='white', vertices=((-1*stim_width*mask_size_ratio, 0), (0, stim_height*mask_size_ratio), (stim_width*mask_size_ratio, 0), (0,-1*stim_height*mask_size_ratio)))
+#mask = visual.ShapeStim(win, lineColor='white', fillColor='white', vertices=((-1*stim_width*mask_size_ratio, 0), (0, stim_height*mask_size_ratio), (stim_width*mask_size_ratio, 0), (0,-1*stim_height*mask_size_ratio)))
+mask = visual.Rect(win, lineColor='white', fillColor='white', width = 2*stim_width*1.6, height = 2*stim_height*1.6)
+black_square = visual.Rect(win, lineColor='black', fillColor='black', width = 2*stim_width, height = 2*stim_height)
+
+
 white_diamond = visual.ShapeStim(win, lineColor='white', fillColor='white', vertices=((-1*stim_width, 0), (0, stim_height), (stim_width, 0), (0,-1*stim_height)))
 black_diamond = visual.ShapeStim(win, lineColor='black', fillColor='black', vertices=((-1*stim_width-pix_size, 0), (0, stim_height+pix_size), (stim_width+pix_size, 0), (0,-1*stim_height-pix_size)))
 blockers = {'left':  visual.ShapeStim(win, lineWidth=.1, lineColor='black', fillColor='black', vertices=((-1, stim_height), (-1, -1*stim_height), (-1*stim_width+stim_width*blocker_size, stim_height), (-1*stim_width+stim_width*blocker_size, -1*stim_height))),
@@ -64,8 +68,9 @@ blockers = {'left':  visual.ShapeStim(win, lineWidth=.1, lineColor='black', fill
 			'bottom':visual.ShapeStim(win, lineWidth=.1, lineColor='black', fillColor='black', vertices=((-1, -1), (1, -1), (-1,-1*stim_height+stim_height*blocker_size), (1,-1*stim_height+stim_height*blocker_size)))
 			}
 
-apert = visual.Aperture(win, size=1, pos=(0, 0), ori=0, nVert=120, shape=((-1*stim_width, 0), (0, stim_height), (stim_width, 0), (0,-1*stim_height)), inverted=False, units=None, name=None, autoLog=None)
-apert.enabled = False
+#apert = visual.Aperture(win, size=1, pos=(0, 0), ori=0, nVert=120, shape=((-1*stim_width, 0), (0, stim_height), (stim_width, 0), (0,-1*stim_height)), inverted=False, units=None, name=None, autoLog=None)
+aperture = visual.Aperture(win,	size = 1, shape= ((-1*stim_width, 1*stim_height), (-1*stim_width, -1*stim_height), (stim_width, -1*stim_height), (stim_width,1*stim_height)))
+aperture.enabled = False
 #maskNoise = visual.ImageStim(win, image = 'maskNoise.png', size = [stim_width*mask_size_ratio*width_ratio, stim_height*mask_size_ratio*height_ratio])
 noise = visual.ImageStim(win, image = 'testnoise.png')
 #Fixation
@@ -142,11 +147,12 @@ for trial in range(len(trials)):
 	start_response = experiment_clock.getTime()
 	for rr in range(int(mask_dur['strong'])):
 		mask.draw()
-		apert.enabled = True
+		#black_square.draw()
+		aperture.enabled = True
 		noise.draw()
 		#black_diamond.draw()
 		win.flip()
-		apert.enabled = False
+		aperture.enabled = False
 	for tt in range(int(blank_dur['strong'])):
 		win.flip()
 
