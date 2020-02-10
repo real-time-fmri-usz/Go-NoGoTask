@@ -44,7 +44,7 @@ random.shuffle(pause_dur)
 stim_size = .06             #size of the stimulus on screen
 mask_size_ratio = 1.6         #how much proptionally bigger is mask
 #stim_line_width =  200      # width of diamond frame lines
-blocker_size = .15         #size of black boxes the mask the edge of the stimulus (pick a value between 0 and 1. 0 blocks nothing, 1 blocks a whole half)
+blocker_size = .2         #size of black boxes the mask the edge of the stimulus (pick a value between 0 and 1. 0 blocks nothing, 1 blocks a whole half)
 response_keys = {'left':'b','right':'z'}     # keys to use for a left response and a right response
 response_keys_inv = {v: k for k, v in response_keys.items()}
 reskeys_list = ['b','z']
@@ -94,7 +94,7 @@ session = exp_input[7]
 
 
 #window
-win = visual.Window(size=[800, 600], color=[-1,-1,-1], screen = 0, fullscr = False)
+win = visual.Window(size=[800, 600], color=[-1,-1,-1], screen = 0, fullscr = False, allowStencil = True)
 win.setMouseVisible(False)
 aspect = float(win.size[1])/float(win.size[0])
 print(aspect)
@@ -112,10 +112,12 @@ blockers = {'left':  visual.ShapeStim(win, lineWidth=.1, lineColor='black', fill
 			'bottom':visual.ShapeStim(win, lineWidth=.1, lineColor='black', fillColor='black', vertices=((-1, -1), (1, -1), (-1,-1*stim_height+stim_height*blocker_size), (1,-1*stim_height+stim_height*blocker_size)))
 			}
 
+#Aperture for noise
+apert = visual.Aperture(win, size=1.01, pos=(0, 0), ori=0, nVert=120, shape=((-1*stim_width, 0), (0, stim_height), (stim_width, 0), (0,-1*stim_height)), inverted=False, units=None, name=None, autoLog=None)
+apert.enabled = False
 
 #noise
-noiseTexture = rd.random([512,512])*2.0-1. # a X-by-X array of random numbers in [-1,1]
-noise = visual.GratingStim(win, tex=noiseTexture, mask=None, size=(stim_width*2,stim_height*2))
+noise = visual.ImageStim(win, image = 'testnoise.png')
 
 
 #Fixation
@@ -480,7 +482,10 @@ for b in range(len(block_list)):
 			# 	win.callOnFlip(port.setData,int("00000101", 2))
 			start_stimulus = experiment_clock.getTime()
 			for stim in range(int(stim_dur[strength])):
-				white_diamond.draw()
+				#white_diamond.draw()
+				apert.enabled = True
+				noise.draw()
+				apert.enabled = False
 				if side != 'NA':
 					blockers[side].draw()
 				win.flip()
@@ -503,6 +508,11 @@ for b in range(len(block_list)):
 				if rr < mask_dur[strength]:
 					mask.draw()
 					black_diamond.draw()
+					apert.enabled = True
+					noise.draw()
+					#black_diamond.draw()
+					#win.flip()
+					apert.enabled = False
 				win.flip()
 		#response collection
 				if not responded:

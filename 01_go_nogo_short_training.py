@@ -89,7 +89,7 @@ language = exp_input[6]
 
 
 #window
-win = visual.Window(size=[800, 600], color=[-1,-1,-1], screen = 0, fullscr = False)
+win = visual.Window(size=[800, 600], color=[-1,-1,-1], screen = 0, fullscr = False, allowStencil = True)
 win.setMouseVisible(False)
 aspect = float(win.size[1])/float(win.size[0])
 print(aspect)
@@ -108,9 +108,12 @@ blockers = {'left':  visual.ShapeStim(win, lineWidth=.1, lineColor='black', fill
 			}
 
 
+#Aperture for noise
+apert = visual.Aperture(win, size=1, pos=(0, 0), ori=0, nVert=120, shape=((-1*stim_width, 0), (0, stim_height), (stim_width, 0), (0,-1*stim_height)), inverted=False, units=None, name=None, autoLog=None)
+apert.enabled = False
+
 #noise
-noiseTexture = rd.random([512,512])*2.0-1. # a X-by-X array of random numbers in [-1,1]
-noise = visual.GratingStim(win, tex=noiseTexture, mask=None, size=(stim_width*2,stim_height*2))
+noise = visual.ImageStim(win, image = 'testnoise.png')
 
 
 #Fixation
@@ -470,7 +473,9 @@ for b in range(len(block_list)):
 			# 	win.callOnFlip(port.setData,int("00000101", 2))
 			start_stimulus = experiment_clock.getTime()
 			for stim in range(int(stim_dur[strength])):
-				white_diamond.draw()
+				apert.enabled = True
+				noise.draw()
+				apert.enabled = False
 				if side != 'NA':
 					blockers[side].draw()
 				win.flip()
@@ -493,6 +498,11 @@ for b in range(len(block_list)):
 				if rr < mask_dur[strength]:
 					mask.draw()
 					black_diamond.draw()
+					apert.enabled = True
+					noise.draw()
+					#black_diamond.draw()
+					#win.flip()
+					apert.enabled = False
 				win.flip()
 		#response collection
 				if not responded:

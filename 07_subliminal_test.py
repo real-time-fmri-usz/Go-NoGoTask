@@ -23,7 +23,7 @@ exp_input = dlg.show()
 
 ###### EDIT PARAMETERS BELOW #######
 
-stim_dur = {'strong':1}     # time in seconds that the subliminal stim appears on the screen [strong,weak,catch]
+stim_dur = {'strong':20}     # time in seconds that the subliminal stim appears on the screen [strong,weak,catch]
 blank_dur = {'strong':2}        # time a blank screen between stim and mask is on screen [strong,weak,catch]
 mask_dur = {'strong':12}     # time the mask appears on the screen [strong,weak,catch]
 
@@ -34,7 +34,7 @@ blank_dur_pre = 3
 stim_size = .06             #size of the stimulus on screen
 mask_size_ratio = 1.6         #how much proptionally bigger is mask
 #stim_line_width =  200      # width of diamond frame lines
-blocker_size = .15         #size of black boxes the mask the edge of the stimulus (pick a value between 0 and 1. 0 blocks nothing, 1 blocks a whole half)
+blocker_size = .20         #size of black boxes the mask the edge of the stimulus (pick a value between 0 and 1. 0 blocks nothing, 1 blocks a whole half)
 response_keys = {'left':'b','right':'z'}     # keys to use for a left response and a right response
 response_keys_inv = {v: k for k, v in response_keys.items()}
 reskeys_list = ['b','z']
@@ -55,8 +55,8 @@ stim_height = stim_size/aspect
 fontsize = 0.055
 wrapwidth = 80
 #Shapes
-#mask = visual.ShapeStim(win, lineColor='white', fillColor='white', vertices=((-1*stim_width*mask_size_ratio, 0), (0, stim_height*mask_size_ratio), (stim_width*mask_size_ratio, 0), (0,-1*stim_height*mask_size_ratio)))
-mask = visual.Rect(win, lineColor='white', fillColor='white', width = 2*stim_width*1.6, height = 2*stim_height*1.6)
+mask = visual.ShapeStim(win, lineColor='white', fillColor='white', vertices=((-1*stim_width*mask_size_ratio, 0), (0, stim_height*mask_size_ratio), (stim_width*mask_size_ratio, 0), (0,-1*stim_height*mask_size_ratio)))
+#mask = visual.Rect(win, lineColor='white', fillColor='white', width = 2*stim_width*1.6, height = 2*stim_height*1.6)
 black_square = visual.Rect(win, lineColor='black', fillColor='black', width = 2*stim_width, height = 2*stim_height)
 
 
@@ -68,9 +68,13 @@ blockers = {'left':  visual.ShapeStim(win, lineWidth=.1, lineColor='black', fill
 			'bottom':visual.ShapeStim(win, lineWidth=.1, lineColor='black', fillColor='black', vertices=((-1, -1), (1, -1), (-1,-1*stim_height+stim_height*blocker_size), (1,-1*stim_height+stim_height*blocker_size)))
 			}
 
-#apert = visual.Aperture(win, size=1, pos=(0, 0), ori=0, nVert=120, shape=((-1*stim_width, 0), (0, stim_height), (stim_width, 0), (0,-1*stim_height)), inverted=False, units=None, name=None, autoLog=None)
-aperture = visual.Aperture(win,	size = 1, shape= ((-1*stim_width, 1*stim_height), (-1*stim_width, -1*stim_height), (stim_width, -1*stim_height), (stim_width,1*stim_height)))
-aperture.enabled = False
+
+apert = visual.Aperture(win, size=1, pos=(0, 0), ori=0, nVert=120, shape=((-1*stim_width, 0), (0, stim_height), (stim_width, 0), (0,-1*stim_height)), inverted=False, units=None, name=None, autoLog=None)
+apert.enablaed = False
+
+#aperture = visual.Aperture(win,	size = 1, shape= ((-1*stim_width, 1*stim_height), (-1*stim_width, -1*stim_height), (stim_width, -1*stim_height), (stim_width,1*stim_height)))
+#aperture.enabled = False
+
 #maskNoise = visual.ImageStim(win, image = 'maskNoise.png', size = [stim_width*mask_size_ratio*width_ratio, stim_height*mask_size_ratio*height_ratio])
 noise = visual.ImageStim(win, image = 'testnoise.png')
 #Fixation
@@ -134,7 +138,11 @@ for trial in range(len(trials)):
 		win.flip()
 
 	for stim in range(int(stim_dur['strong'])):
-		white_diamond.draw()
+		#white_diamond.draw()
+
+		apert.enabled = True
+		noise.draw()
+		apert.enabled = False
 		blockers[side].draw()
 		win.flip()
 
@@ -147,12 +155,12 @@ for trial in range(len(trials)):
 	start_response = experiment_clock.getTime()
 	for rr in range(int(mask_dur['strong'])):
 		mask.draw()
-		#black_square.draw()
-		aperture.enabled = True
+		black_diamond.draw()
+		apert.enabled = True
 		noise.draw()
 		#black_diamond.draw()
 		win.flip()
-		aperture.enabled = False
+		apert.enabled = False
 	for tt in range(int(blank_dur['strong'])):
 		win.flip()
 
