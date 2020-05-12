@@ -511,7 +511,7 @@ for b in range(len(block_list)):
 				elif go_type == 'nogo' and strength == 'strong':
 					win.callOnFlip(port.setData,4)
 			presentation_duration = experiment_clock.getTime() - start_stimulus
-			port.setData(129)
+			port.setData(0)
 			#blank presentation
 			for m in range(int(blank_dur[strength])):
 				win.flip()
