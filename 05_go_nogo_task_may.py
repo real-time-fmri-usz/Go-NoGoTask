@@ -31,9 +31,9 @@ port = parallel.ParallelPort(0x1FF8)
 
 ###### EDIT PARAMETERS BELOW #######
 
-stim_dur = {'strong':1,'weak':10,'catch':0}     # time in seconds that the subliminal stim appears on the screen [strong,weak,catch]
+stim_dur = {'strong':1,'weak':12,'catch':0}     # time in seconds that the subliminal stim appears on the screen [strong,weak,catch]
 blank_dur = {'strong':2,'weak':0,'catch':0}        # time a blank screen between stim and mask is on screen [strong,weak,catch]
-mask_dur = {'strong':12,'weak': 5,'catch':15}     # time the mask appears on the screen [strong,weak,catch]
+mask_dur = {'strong':12,'weak': 3,'catch':15}     # time the mask appears on the screen [strong,weak,catch]
 responses = [105,107,109]
 response_dur_list = responses * 48
 random.shuffle(response_dur_list)            # time the response period stays on the screen
